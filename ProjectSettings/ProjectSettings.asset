@@ -570,7 +570,8 @@ PlayerSettings:
   webGLUseEmbeddedResources: 0
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
-  scriptingDefineSymbols: {}
+  scriptingDefineSymbols:
+    4: __MICROSPLAT__
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
