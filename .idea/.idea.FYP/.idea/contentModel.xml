@@ -7,6 +7,7 @@
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
+<<<<<<< HEAD
         <e p="CharacterScript.cs" t="Include" />
         <e p="Fonts" t="Include">
           <e p="Roboto" t="Include">
@@ -445,6 +446,8 @@
             </e>
           </e>
         </e>
+=======
+>>>>>>> parent of 3dd12b6... Backup
         <e p="Store Assets" t="Include">
           <e p="MicroSplat" t="Include">
             <e p="Core" t="Include">
