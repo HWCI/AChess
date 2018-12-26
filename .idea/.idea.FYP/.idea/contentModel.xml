@@ -11,14 +11,11 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
         <e p="CharacterScript.cs" t="Include" />
-        <e p="Fonts" t="Include">
-          <e p="Roboto" t="Include">
-            <e p="license.txt" t="Include" />
-          </e>
-        </e>
+        <e p="GameManager.cs" t="Include" />
         <e p="GridScript.cs" t="Include" />
         <e p="InteractionScript.cs" t="Include" />
         <e p="MovementController.cs" t="Include" />
+<<<<<<< HEAD
         <e p="PostProcessing" t="Include">
           <e p="Editor" t="Include">
             <e p="Attributes" t="Include">
@@ -454,6 +451,8 @@
 >>>>>>> parent of 3dd12b6... Backup
 =======
 >>>>>>> parent of 3dd12b6... Backup
+=======
+>>>>>>> parent of 26a45aa... Merge
         <e p="Store Assets" t="Include">
           <e p="MicroSplat" t="Include">
             <e p="Core" t="Include">
@@ -589,14 +588,6 @@
             <e p="Skyboxes" t="Include">
               <e p="_skybox info.txt" t="Include" />
             </e>
-          </e>
-        </e>
-        <e p="TutorialInfo" t="Include">
-          <e p="Scripts" t="Include">
-            <e p="Editor" t="Include">
-              <e p="ReadmeEditor.cs" t="Include" />
-            </e>
-            <e p="Readme.cs" t="Include" />
           </e>
         </e>
         <e p="UnityARKitPlugin" t="Include">
