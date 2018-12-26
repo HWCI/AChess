@@ -29,7 +29,7 @@ public class MovementController : MonoBehaviour
 		if (Input.GetMouseButtonDown(0)) {
 			RaycastHit hit;
                 
-			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 100)) {
+			if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, 200)) {
 				Debug.Log(hit.collider.gameObject.name);
 				if (hit.collider.gameObject.CompareTag("Grid"))
 				{

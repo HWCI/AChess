@@ -1352,6 +1352,8 @@ GameObject:
   - component: {fileID: 136451027075035832}
   - component: {fileID: 195616506333974094}
   - component: {fileID: 114874337041898286}
+  - component: {fileID: 114842808703901678}
+  - component: {fileID: 114640291468812340}
   m_Layer: 0
   m_Name: Character_Card
   m_TagString: Player
@@ -6580,6 +6582,37 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114640291468812340
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1504701952112508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 387e15a0a025d41bd9547daed50833d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  configuration:
+    maxHealth: 100
+    startingHealth: 100
+    alignment:
+      unityObjectReference: {fileID: 0}
+--- !u!114 &114842808703901678
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1504701952112508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5440fde571ec4db4a719f37df8e972f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageableBehaviour: {fileID: 0}
+  healthBar: {fileID: 0}
+  backgroundBar: {fileID: 0}
+  showWhenFull: 0
 --- !u!114 &114874337041898286
 MonoBehaviour:
   m_ObjectHideFlags: 1
