@@ -114,6 +114,7 @@ NavMeshSettings:
       m_Flags: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_NavMeshData: {fileID: 23800000, guid: bf2c9515c13f40c4398ff37315cee138, type: 2}
 --- !u!1 &3257745
 GameObject:
@@ -409,6 +410,9 @@ Transform:
 =======
   m_NavMeshData: {fileID: 0}
 >>>>>>> parent of 3dd12b6... Backup
+=======
+  m_NavMeshData: {fileID: 0}
+>>>>>>> parent of 3dd12b6... Backup
 --- !u!1 &51984292
 GameObject:
   m_ObjectHideFlags: 0
@@ -479,6 +483,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 51984292}
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   m_LocalRotation: {x: 0.57386225, y: -0, z: -0, w: 0.81895185}
@@ -1367,6 +1372,15 @@ Transform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 >>>>>>> parent of 3dd12b6... Backup
+=======
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+>>>>>>> parent of 3dd12b6... Backup
 --- !u!1 &308416197
 GameObject:
   m_ObjectHideFlags: 0
@@ -1430,6 +1444,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
   m_Father: {fileID: 1151035747}
@@ -7553,6 +7568,11 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+>>>>>>> parent of 3dd12b6... Backup
 =======
   m_Father: {fileID: 0}
   m_RootOrder: 1

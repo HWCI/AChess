@@ -9,6 +9,7 @@
       <e p="Assets" t="Include">
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         <e p="CharacterScript.cs" t="Include" />
         <e p="Fonts" t="Include">
           <e p="Roboto" t="Include">
@@ -447,6 +448,8 @@
             </e>
           </e>
         </e>
+=======
+>>>>>>> parent of 3dd12b6... Backup
 =======
 >>>>>>> parent of 3dd12b6... Backup
 =======
