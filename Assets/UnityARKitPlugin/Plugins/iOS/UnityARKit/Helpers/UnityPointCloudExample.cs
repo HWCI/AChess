@@ -1,27 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 public class UnityPointCloudExample : MonoBehaviour
 {
-    public uint numPointsToShow = 100;
-    public GameObject PointCloudPrefab = null;
-    private List<GameObject> pointCloudObjects;
     private Vector3[] m_PointCloudData;
+    public uint numPointsToShow = 100;
+    private List<GameObject> pointCloudObjects;
+    public GameObject PointCloudPrefab;
 
     public void Start()
     {
         UnityARSessionNativeInterface.ARFrameUpdatedEvent += ARFrameUpdated;
         if (PointCloudPrefab != null)
         {
-            pointCloudObjects = new List<GameObject> ();
-            for (int i =0; i < numPointsToShow; i++)
-            {
-                pointCloudObjects.Add (Instantiate (PointCloudPrefab));
-            }
+            pointCloudObjects = new List<GameObject>();
+            for (var i = 0; i < numPointsToShow; i++) pointCloudObjects.Add(Instantiate(PointCloudPrefab));
         }
     }
 
@@ -33,13 +28,11 @@ public class UnityPointCloudExample : MonoBehaviour
     public void Update()
     {
         if (PointCloudPrefab != null && m_PointCloudData != null)
-        {
-            for (int count = 0; count < Math.Min (m_PointCloudData.Length, numPointsToShow); count++)
+            for (var count = 0; count < Math.Min(m_PointCloudData.Length, numPointsToShow); count++)
             {
-                Vector4 vert = m_PointCloudData [count];
-                GameObject point = pointCloudObjects [count];
+                Vector4 vert = m_PointCloudData[count];
+                var point = pointCloudObjects[count];
                 point.transform.position = new Vector3(vert.x, vert.y, vert.z);
             }
-        }
     }
 }

@@ -1,74 +1,74 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using UnityEngine;
+using UnityEngine.AI;
 
-public class AICarMove : MonoBehaviour {
+public class AICarMove : MonoBehaviour
+{
+    private const float CAR_SPEED_MAX = 1.0f;
 
-	[SerializeField]
-	GameObject targetAICar;
-	[SerializeField]
-	GameObject[] targetNavMeshObjects;
-	int targetNavMeshObjectCounts;
-	int targetNavMeshObjectNow;
+    private NavMeshAgent navMeshAgentCompornent;
 
-	Vector3 startPos;
-	Vector3 startRot;
+    private Vector3 startPos;
+    private Vector3 startRot;
 
-	UnityEngine.AI.NavMeshAgent navMeshAgentCompornent;
-	const float CAR_SPEED_MAX = 1.0f;
+    [SerializeField] private GameObject targetAICar;
 
-	// Use this for initialization
-	void Start () {
+    private int targetNavMeshObjectCounts;
+    private int targetNavMeshObjectNow;
 
-		navMeshAgentCompornent = this.GetComponent<UnityEngine.AI.NavMeshAgent>();
-		startPos = targetNavMeshObjects[0].transform.localPosition;
-		startRot = targetNavMeshObjects[0].transform.localEulerAngles;
-		targetNavMeshObjectCounts = targetNavMeshObjects.Length -1;
+    [SerializeField] private GameObject[] targetNavMeshObjects;
 
-	}
+    // Use this for initialization
+    private void Start()
+    {
+        navMeshAgentCompornent = GetComponent<NavMeshAgent>();
+        startPos = targetNavMeshObjects[0].transform.localPosition;
+        startRot = targetNavMeshObjects[0].transform.localEulerAngles;
+        targetNavMeshObjectCounts = targetNavMeshObjects.Length - 1;
+    }
 
-	public void InitAICar () {
+    public void InitAICar()
+    {
+        navMeshAgentCompornent.speed = 0.0f;
+        targetAICar.GetComponent<Animation>().Play("00_Stop");
+        StartCoroutine(startCar(3.0f));
+    }
 
-		navMeshAgentCompornent.speed = 0.0f;
-		targetAICar.GetComponent<Animation>().Play("00_Stop");
-		StartCoroutine(startCar(3.0f));
+    private IEnumerator startCar(float startDelayTime)
+    {
+        navMeshAgentCompornent.speed = 0.0f;
+        targetAICar.GetComponent<Animation>().Play("00_Stop");
+        yield return new WaitForSeconds(startDelayTime);
 
-	}
+        // Set destination
+        targetNavMeshObjectNow = 1;
+        navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform.localPosition);
+        transform.localPosition = startPos;
+        transform.localEulerAngles = startRot;
 
-	IEnumerator startCar (float startDelayTime) {
+        yield return new WaitForSeconds(0.5f);
+        navMeshAgentCompornent.speed = CAR_SPEED_MAX;
+        targetAICar.GetComponent<Animation>().Play("01_Run");
+    }
 
-		navMeshAgentCompornent.speed = 0.0f;
-		targetAICar.GetComponent<Animation>().Play("00_Stop");
-		yield return new WaitForSeconds(startDelayTime);
 
-		// Set destination
-		targetNavMeshObjectNow = 1;
-		navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform.localPosition);
-		this.transform.localPosition = startPos;
-		this.transform.localEulerAngles = startRot;
-
-		yield return new WaitForSeconds(0.5f);
-		navMeshAgentCompornent.speed = CAR_SPEED_MAX;
-		targetAICar.GetComponent<Animation>().Play("01_Run");
-
-	}
-
-	
-	// Update is called once per frame
-	void Update () {
-
-		if (navMeshAgentCompornent.remainingDistance < 0.1f)
-		{
-			targetNavMeshObjectNow ++;
-			if (targetNavMeshObjectNow <= targetNavMeshObjectCounts)
-			{
-				navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform.localPosition);
-			}
-			else if (targetNavMeshObjectNow >  targetNavMeshObjectCounts)
-			{
-				targetNavMeshObjectNow = 1;
-				navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform.localPosition);
-			}
-		}
-	
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+        if (navMeshAgentCompornent.remainingDistance < 0.1f)
+        {
+            targetNavMeshObjectNow++;
+            if (targetNavMeshObjectNow <= targetNavMeshObjectCounts)
+            {
+                navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform
+                    .localPosition);
+            }
+            else if (targetNavMeshObjectNow > targetNavMeshObjectCounts)
+            {
+                targetNavMeshObjectNow = 1;
+                navMeshAgentCompornent.SetDestination(targetNavMeshObjects[targetNavMeshObjectNow].transform
+                    .localPosition);
+            }
+        }
+    }
 }

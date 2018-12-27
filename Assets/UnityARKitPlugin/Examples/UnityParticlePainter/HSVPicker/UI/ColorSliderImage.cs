@@ -1,27 +1,24 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-[RequireComponent(typeof(RawImage)), ExecuteInEditMode()]
+[RequireComponent(typeof(RawImage))]
+[ExecuteInEditMode]
 public class ColorSliderImage : MonoBehaviour
 {
-    public ColorPicker picker;
-
-    /// <summary>
-    /// Which value this slider can edit.
-    /// </summary>
-    public ColorValues type;
-
     public Slider.Direction direction;
 
     private RawImage image;
+    public ColorPicker picker;
+
+    /// <summary>
+    ///     Which value this slider can edit.
+    /// </summary>
+    public ColorValues type;
 
     private RectTransform rectTransform
     {
-        get
-        {
-            return transform as RectTransform;
-        }
+        get { return transform as RectTransform; }
     }
 
     private void Awake()
@@ -103,15 +100,15 @@ public class ColorSliderImage : MonoBehaviour
     {
         Color32 baseColor = picker != null ? picker.CurrentColor : Color.black;
 
-        float h = picker != null ? picker.H : 0;
-        float s = picker != null ? picker.S : 0;
-        float v = picker != null ? picker.V : 0;
+        var h = picker != null ? picker.H : 0;
+        var s = picker != null ? picker.S : 0;
+        var v = picker != null ? picker.V : 0;
 
         Texture2D texture;
         Color32[] colors;
 
-        bool vertical = direction == Slider.Direction.BottomToTop || direction == Slider.Direction.TopToBottom;
-        bool inverted = direction == Slider.Direction.TopToBottom || direction == Slider.Direction.RightToLeft;
+        var vertical = direction == Slider.Direction.BottomToTop || direction == Slider.Direction.TopToBottom;
+        var inverted = direction == Slider.Direction.TopToBottom || direction == Slider.Direction.RightToLeft;
 
         int size;
         switch (type)
@@ -130,8 +127,9 @@ public class ColorSliderImage : MonoBehaviour
                 size = 100;
                 break;
             default:
-                throw new System.NotImplementedException("");
+                throw new NotImplementedException("");
         }
+
         if (vertical)
             texture = new Texture2D(1, size);
         else
@@ -144,49 +142,35 @@ public class ColorSliderImage : MonoBehaviour
         {
             case ColorValues.R:
                 for (byte i = 0; i < size; i++)
-                {
                     colors[inverted ? size - 1 - i : i] = new Color32(i, baseColor.g, baseColor.b, 255);
-                }
                 break;
             case ColorValues.G:
                 for (byte i = 0; i < size; i++)
-                {
                     colors[inverted ? size - 1 - i : i] = new Color32(baseColor.r, i, baseColor.b, 255);
-                }
                 break;
             case ColorValues.B:
                 for (byte i = 0; i < size; i++)
-                {
                     colors[inverted ? size - 1 - i : i] = new Color32(baseColor.r, baseColor.g, i, 255);
-                }
                 break;
             case ColorValues.A:
-                for (byte i = 0; i < size; i++)
-                {
-                    colors[inverted ? size - 1 - i : i] = new Color32(i, i, i, 255);
-                }
+                for (byte i = 0; i < size; i++) colors[inverted ? size - 1 - i : i] = new Color32(i, i, i, 255);
                 break;
             case ColorValues.Hue:
-                for (int i = 0; i < size; i++)
-                {
+                for (var i = 0; i < size; i++)
                     colors[inverted ? size - 1 - i : i] = HSVUtil.ConvertHsvToRgb(i, 1, 1, 1);
-                }
                 break;
             case ColorValues.Saturation:
-                for (int i = 0; i < size; i++)
-                {
-                    colors[inverted ? size - 1 - i : i] = HSVUtil.ConvertHsvToRgb(h * 360, (float)i / size, v, 1);
-                }
+                for (var i = 0; i < size; i++)
+                    colors[inverted ? size - 1 - i : i] = HSVUtil.ConvertHsvToRgb(h * 360, (float) i / size, v, 1);
                 break;
             case ColorValues.Value:
-                for (int i = 0; i < size; i++)
-                {
-                    colors[inverted ? size - 1 - i : i] = HSVUtil.ConvertHsvToRgb(h * 360, s, (float)i / size, 1);
-                }
+                for (var i = 0; i < size; i++)
+                    colors[inverted ? size - 1 - i : i] = HSVUtil.ConvertHsvToRgb(h * 360, s, (float) i / size, 1);
                 break;
             default:
-                throw new System.NotImplementedException("");
+                throw new NotImplementedException("");
         }
+
         texture.SetPixels32(colors);
         texture.Apply();
 
@@ -204,9 +188,6 @@ public class ColorSliderImage : MonoBehaviour
             case Slider.Direction.RightToLeft:
                 image.uvRect = new Rect(0, 0, 1, 2);
                 break;
-            default:
-                break;
         }
     }
-
 }

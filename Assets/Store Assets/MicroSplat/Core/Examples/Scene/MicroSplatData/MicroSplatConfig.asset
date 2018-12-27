@@ -4,7 +4,8 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -16,7 +17,7 @@ MonoBehaviour:
   textureMode: 1
   clusterMode: 0
   packingMode: 0
-  hash: 1501771236
+  hash: -297080296
   diffuseArray: {fileID: 18700000, guid: 6966c6a2271704eeaa4697428c97b571, type: 2}
   normalSAOArray: {fileID: 18700000, guid: ca49526f427194c41b515c21c5dbe465, type: 2}
   smoothAOArray: {fileID: 0}

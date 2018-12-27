@@ -1,29 +1,23 @@
-﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
-using UnityEngine.Events;
+﻿using System;
+using UnityEngine;
 
 public class ColorPicker : MonoBehaviour
 {
-    private float _hue = 0;
-    private float _saturation = 0;
-    private float _brightness = 0;
-
-    private float _red = 0;
-    private float _green = 0;
-    private float _blue = 0;
-
     private float _alpha = 1;
+    private float _blue;
+    private float _brightness;
+    private float _green;
+    private float _hue;
+
+    private float _red;
+    private float _saturation;
+    public HSVChangedEvent onHSVChanged = new HSVChangedEvent();
 
     public ColorChangedEvent onValueChanged = new ColorChangedEvent();
-    public HSVChangedEvent onHSVChanged = new HSVChangedEvent();
 
     public Color CurrentColor
     {
-        get
-        {
-            return new Color(_red, _green, _blue, _alpha);
-        }
+        get { return new Color(_red, _green, _blue, _alpha); }
         set
         {
             if (CurrentColor == value)
@@ -35,22 +29,14 @@ public class ColorPicker : MonoBehaviour
             _alpha = value.a;
 
             RGBChanged();
-            
+
             SendChangedEvent();
         }
     }
 
-    private void Start()
-    {
-        SendChangedEvent();
-    }
-
     public float H
     {
-        get
-        {
-            return _hue;
-        }
+        get { return _hue; }
         set
         {
             if (_hue == value)
@@ -66,10 +52,7 @@ public class ColorPicker : MonoBehaviour
 
     public float S
     {
-        get
-        {
-            return _saturation;
-        }
+        get { return _saturation; }
         set
         {
             if (_saturation == value)
@@ -85,10 +68,7 @@ public class ColorPicker : MonoBehaviour
 
     public float V
     {
-        get
-        {
-            return _brightness;
-        }
+        get { return _brightness; }
         set
         {
             if (_brightness == value)
@@ -104,10 +84,7 @@ public class ColorPicker : MonoBehaviour
 
     public float R
     {
-        get
-        {
-            return _red;
-        }
+        get { return _red; }
         set
         {
             if (_red == value)
@@ -123,10 +100,7 @@ public class ColorPicker : MonoBehaviour
 
     public float G
     {
-        get
-        {
-            return _green;
-        }
+        get { return _green; }
         set
         {
             if (_green == value)
@@ -142,10 +116,7 @@ public class ColorPicker : MonoBehaviour
 
     public float B
     {
-        get
-        {
-            return _blue;
-        }
+        get { return _blue; }
         set
         {
             if (_blue == value)
@@ -161,10 +132,7 @@ public class ColorPicker : MonoBehaviour
 
     private float A
     {
-        get
-        {
-            return _alpha;
-        }
+        get { return _alpha; }
         set
         {
             if (_alpha == value)
@@ -176,9 +144,14 @@ public class ColorPicker : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+        SendChangedEvent();
+    }
+
     private void RGBChanged()
     {
-        HsvColor color = HSVUtil.ConvertRgbToHsv(CurrentColor);
+        var color = HSVUtil.ConvertRgbToHsv(CurrentColor);
 
         _hue = color.normalizedH;
         _saturation = color.normalizedS;
@@ -187,7 +160,7 @@ public class ColorPicker : MonoBehaviour
 
     private void HSVChanged()
     {
-        Color color = HSVUtil.ConvertHsvToRgb(_hue * 360, _saturation, _brightness, _alpha);
+        var color = HSVUtil.ConvertHsvToRgb(_hue * 360, _saturation, _brightness, _alpha);
 
         _red = color.r;
         _green = color.g;
@@ -225,8 +198,6 @@ public class ColorPicker : MonoBehaviour
             case ColorValues.Value:
                 V = value;
                 break;
-            default:
-                break;
         }
     }
 
@@ -249,7 +220,7 @@ public class ColorPicker : MonoBehaviour
             case ColorValues.Value:
                 return V;
             default:
-                throw new System.NotImplementedException("");
+                throw new NotImplementedException("");
         }
     }
 }

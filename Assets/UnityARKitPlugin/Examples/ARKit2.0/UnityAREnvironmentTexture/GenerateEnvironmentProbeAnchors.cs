@@ -1,75 +1,65 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Collections.Hybrid.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
-using Collections.Hybrid.Generic;
 
-public class GenerateEnvironmentProbeAnchors : MonoBehaviour {
+public class GenerateEnvironmentProbeAnchors : MonoBehaviour
+{
+    [SerializeField] private ReflectionProbeGameObject m_ReflectionProbePrefab;
 
-	[SerializeField]
-	ReflectionProbeGameObject m_ReflectionProbePrefab;
-
-	private LinkedListDictionary<string, ReflectionProbeGameObject> probeAnchorMap;
+    private LinkedListDictionary<string, ReflectionProbeGameObject> probeAnchorMap;
 
 
+    private void Start()
+    {
+        probeAnchorMap = new LinkedListDictionary<string, ReflectionProbeGameObject>();
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorAddedEvent += EnvironmentProbeAnchorAdded;
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorRemovedEvent += EnvironmentProbeAnchorRemoved;
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorUpdatedEvent += EnvironmentProbeAnchorUpdated;
+    }
 
-	void Start () 
-	{
-		probeAnchorMap = new LinkedListDictionary<string, ReflectionProbeGameObject> ();
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorAddedEvent += EnvironmentProbeAnchorAdded;
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorRemovedEvent += EnvironmentProbeAnchorRemoved;
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorUpdatedEvent += EnvironmentProbeAnchorUpdated;
-	}
+    private void EnvironmentProbeAnchorUpdated(AREnvironmentProbeAnchor anchorData)
+    {
+        if (probeAnchorMap.ContainsKey(anchorData.identifier))
+            probeAnchorMap[anchorData.identifier].UpdateEnvironmentProbe(anchorData);
+    }
 
-	void EnvironmentProbeAnchorUpdated (AREnvironmentProbeAnchor anchorData)
-	{
-		if (probeAnchorMap.ContainsKey (anchorData.identifier)) {
-			probeAnchorMap [anchorData.identifier].UpdateEnvironmentProbe(anchorData);
-		}
+    private void EnvironmentProbeAnchorRemoved(AREnvironmentProbeAnchor anchorData)
+    {
+        if (probeAnchorMap.ContainsKey(anchorData.identifier))
+        {
+            var rpgo = probeAnchorMap[anchorData.identifier];
+            Destroy(rpgo.gameObject);
+            probeAnchorMap.Remove(anchorData.identifier);
+        }
+    }
 
-	}
+    private void EnvironmentProbeAnchorAdded(AREnvironmentProbeAnchor anchorData)
+    {
+        var go = Instantiate(m_ReflectionProbePrefab);
+        if (go != null)
+        {
+            //do coordinate conversion from ARKit to Unity
+            go.transform.position = UnityARMatrixOps.GetPosition(anchorData.transform);
+            go.transform.rotation = UnityARMatrixOps.GetRotation(anchorData.transform);
 
-	void EnvironmentProbeAnchorRemoved (AREnvironmentProbeAnchor anchorData)
-	{
-		if (probeAnchorMap.ContainsKey (anchorData.identifier)) {
-			ReflectionProbeGameObject rpgo = probeAnchorMap [anchorData.identifier];
-			GameObject.Destroy (rpgo.gameObject);
-			probeAnchorMap.Remove (anchorData.identifier);
-		}
-	}
+            probeAnchorMap[anchorData.identifier] = go;
+            go.UpdateEnvironmentProbe(anchorData);
+        }
+    }
 
-	void EnvironmentProbeAnchorAdded (AREnvironmentProbeAnchor anchorData)
-	{
-		ReflectionProbeGameObject go = GameObject.Instantiate<ReflectionProbeGameObject> (m_ReflectionProbePrefab);
-		if (go != null) 
-		{
-			//do coordinate conversion from ARKit to Unity
-			go.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
-			go.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
+    private void OnDestroy()
+    {
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorAddedEvent -= EnvironmentProbeAnchorAdded;
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorRemovedEvent -= EnvironmentProbeAnchorRemoved;
+        UnityARSessionNativeInterface.AREnvironmentProbeAnchorUpdatedEvent -= EnvironmentProbeAnchorUpdated;
 
-			probeAnchorMap [anchorData.identifier] = go;
-			go.UpdateEnvironmentProbe (anchorData);
-		}
+        foreach (var rpgo in probeAnchorMap.Values) Destroy(rpgo);
 
-	}
+        probeAnchorMap.Clear();
+    }
 
-	void OnDestroy()
-	{
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorAddedEvent -= EnvironmentProbeAnchorAdded;
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorRemovedEvent -= EnvironmentProbeAnchorRemoved;
-		UnityARSessionNativeInterface.AREnvironmentProbeAnchorUpdatedEvent -= EnvironmentProbeAnchorUpdated;
-
-		foreach (ReflectionProbeGameObject rpgo in probeAnchorMap.Values) 
-		{
-			GameObject.Destroy (rpgo);
-		}
-
-		probeAnchorMap.Clear ();
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+    }
 }

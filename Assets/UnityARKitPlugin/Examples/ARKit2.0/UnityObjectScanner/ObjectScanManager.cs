@@ -1,124 +1,126 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.iOS;
-using System;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.XR.iOS;
 
-public class ObjectScanManager : MonoBehaviour {
+public class ObjectScanManager : MonoBehaviour
+{
+    private bool detectionMode;
 
-	[SerializeField]
-	ObjectScanSessionManager m_ARSessionManager;
+    [SerializeField] private Text listOfObjects;
 
-	[SerializeField]
-	Text listOfObjects;
+    [SerializeField] private ObjectScanSessionManager m_ARSessionManager;
 
-	int objIndex = 0;
-	List<ARReferenceObject> scannedObjects;
-	bool detectionMode = false;
+    private int objIndex;
 
-	private PickBoundingBox pickBoundingBox;
+    private PickBoundingBox pickBoundingBox;
+    private List<ARReferenceObject> scannedObjects;
 
-	void Start()
-	{
-		scannedObjects = new List<ARReferenceObject> ();
-		pickBoundingBox = GetComponent<PickBoundingBox> ();
-	}
+    private static UnityARSessionNativeInterface session
+    {
+        get { return UnityARSessionNativeInterface.GetARSessionNativeInterface(); }
+    }
 
-	void OnDestroy()
-	{
-		ClearScannedObjects ();
-	}
+    private void Start()
+    {
+        scannedObjects = new List<ARReferenceObject>();
+        pickBoundingBox = GetComponent<PickBoundingBox>();
+    }
 
-	static UnityARSessionNativeInterface session
-	{
-		get { return UnityARSessionNativeInterface.GetARSessionNativeInterface(); }
-	}
+    private void OnDestroy()
+    {
+        ClearScannedObjects();
+    }
 
-	public void CreateReferenceObject()
-	{
-		//this script should be placed on the bounding volume GameObject
-		CreateReferenceObject (pickBoundingBox.transform, pickBoundingBox.bounds.center-pickBoundingBox.transform.position, pickBoundingBox.bounds.size);
-	}
+    public void CreateReferenceObject()
+    {
+        //this script should be placed on the bounding volume GameObject
+        CreateReferenceObject(pickBoundingBox.transform,
+            pickBoundingBox.bounds.center - pickBoundingBox.transform.position, pickBoundingBox.bounds.size);
+    }
 
-	public void CreateReferenceObject(Transform objectTransform, Vector3 center, Vector3 extent)
-	{
-		session.ExtractReferenceObjectAsync (objectTransform, center, extent, (ARReferenceObject referenceObject) => {
-			if (referenceObject != null) {
-				Debug.LogFormat ("ARReferenceObject created: center {0} extent {1}", referenceObject.center, referenceObject.extent);
-				referenceObject.name = "objScan_" + objIndex++;
-				Debug.LogFormat ("ARReferenceObject has name {0}", referenceObject.name);
-				scannedObjects.Add(referenceObject);
-				UpdateList();
-			} else {
-				Debug.Log ("Failed to create ARReferenceObject.");
-			}
-		});
-	}
+    public void CreateReferenceObject(Transform objectTransform, Vector3 center, Vector3 extent)
+    {
+        session.ExtractReferenceObjectAsync(objectTransform, center, extent, referenceObject =>
+        {
+            if (referenceObject != null)
+            {
+                Debug.LogFormat("ARReferenceObject created: center {0} extent {1}", referenceObject.center,
+                    referenceObject.extent);
+                referenceObject.name = "objScan_" + objIndex++;
+                Debug.LogFormat("ARReferenceObject has name {0}", referenceObject.name);
+                scannedObjects.Add(referenceObject);
+                UpdateList();
+            }
+            else
+            {
+                Debug.Log("Failed to create ARReferenceObject.");
+            }
+        });
+    }
 
-	void UpdateList()
-	{
-		string members = "";
-		foreach (ARReferenceObject arro in scannedObjects) {
-			members += arro.name + ",";
-		}
-		listOfObjects.text = members;
-	}
+    private void UpdateList()
+    {
+        var members = "";
+        foreach (var arro in scannedObjects) members += arro.name + ",";
+        listOfObjects.text = members;
+    }
 
-	public void DetectScannedObjects(Text toChange)
-	{
-		detectionMode = !detectionMode;
-		if (detectionMode) {
-			StartDetecting ();
-			toChange.text = "Stop Detecting";
-		} else {
-			m_ARSessionManager.StartObjectScanningSession ();
-			toChange.text = "Detect Objects";
-		}
-	}
+    public void DetectScannedObjects(Text toChange)
+    {
+        detectionMode = !detectionMode;
+        if (detectionMode)
+        {
+            StartDetecting();
+            toChange.text = "Stop Detecting";
+        }
+        else
+        {
+            m_ARSessionManager.StartObjectScanningSession();
+            toChange.text = "Detect Objects";
+        }
+    }
 
-	private void StartDetecting()
-	{
-		//create a set out of the scanned objects
-		IntPtr ptrReferenceObjectsSet = session.CreateNativeReferenceObjectsSet(scannedObjects);
+    private void StartDetecting()
+    {
+        //create a set out of the scanned objects
+        var ptrReferenceObjectsSet = session.CreateNativeReferenceObjectsSet(scannedObjects);
 
-		//restart session without resetting tracking 
-		var config = m_ARSessionManager.sessionConfiguration;
+        //restart session without resetting tracking 
+        var config = m_ARSessionManager.sessionConfiguration;
 
-		//use object set from above to detect objects
-		config.dynamicReferenceObjectsPtr = ptrReferenceObjectsSet;
+        //use object set from above to detect objects
+        config.dynamicReferenceObjectsPtr = ptrReferenceObjectsSet;
 
-		//Debug.Log("Restarting session without resetting tracking");
-		session.RunWithConfigAndOptions(config, UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking);
+        //Debug.Log("Restarting session without resetting tracking");
+        session.RunWithConfigAndOptions(config,
+            UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors |
+            UnityARSessionRunOption.ARSessionRunOptionResetTracking);
+    }
 
-	}
 
+    public void ClearScannedObjects()
+    {
+        detectionMode = false;
+        scannedObjects.Clear();
+        UpdateList();
+        m_ARSessionManager.StartObjectScanningSession();
+    }
 
-	public void ClearScannedObjects()
-	{
-		detectionMode = false;
-		scannedObjects.Clear ();
-		UpdateList ();
-		m_ARSessionManager.StartObjectScanningSession ();
-	}
+    public void SaveScannedObjects()
+    {
+        if (scannedObjects.Count == 0)
+            return;
 
-	public void SaveScannedObjects()
-	{
-		if (scannedObjects.Count == 0)
-			return;
+        var pathToSaveTo = Path.Combine(Application.persistentDataPath, "ARReferenceObjects");
 
-		string pathToSaveTo = Path.Combine(Application.persistentDataPath, "ARReferenceObjects");
+        if (!Directory.Exists(pathToSaveTo)) Directory.CreateDirectory(pathToSaveTo);
 
-		if (!Directory.Exists (pathToSaveTo)) 
-		{
-			Directory.CreateDirectory (pathToSaveTo);
-		}
-
-		foreach (ARReferenceObject arro in scannedObjects) 
-		{
-			string fullPath = Path.Combine (pathToSaveTo, arro.name + ".arobject");
-			arro.Save (fullPath);
-		}
-	}
+        foreach (var arro in scannedObjects)
+        {
+            var fullPath = Path.Combine(pathToSaveTo, arro.name + ".arobject");
+            arro.Save(fullPath);
+        }
+    }
 }

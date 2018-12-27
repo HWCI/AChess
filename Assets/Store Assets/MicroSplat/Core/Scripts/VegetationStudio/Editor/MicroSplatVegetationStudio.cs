@@ -4,15 +4,9 @@
 //////////////////////////////////////////////////////
 
 
-using UnityEngine;
-using System.Collections;
-using UnityEditor;
-using UnityEditor.Callbacks;
-using System.Collections.Generic;
-
-namespace JBooth.MicroSplat 
+namespace JBooth.MicroSplat
 {
-   #if __MICROSPLAT__ && VEGETATION_STUDIO
+#if __MICROSPLAT__ && VEGETATION_STUDIO
    [InitializeOnLoad]
    public class MicroSplatVegetationStudio : FeatureDescriptor
    {
@@ -51,7 +45,8 @@ namespace JBooth.MicroSplat
 
       GUIContent CShaderGrassMap = new GUIContent("Vegetation Studio GrassMap", "Enable texturing of distant grasses");
       GUIContent CShaderShadowMap = new GUIContent("Vegetation Studio ShadowMap", "Enable distance shadows for trees");
-      GUIContent CShaderTapCount = new GUIContent("Shadow Map Quality", "Higher quality gives smoother shadows in the distance");
+      GUIContent CShaderTapCount =
+ new GUIContent("Shadow Map Quality", "Higher quality gives smoother shadows in the distance");
       // Can we template these somehow?
       public static string GetFeatureName(DefineFeature feature)
       {
@@ -86,7 +81,8 @@ namespace JBooth.MicroSplat
          }
       }
 
-      GUIContent CShaderTint = new GUIContent("Grass Mask Tint", "Tint the grass overlay color, or reduce it's overall effect with the alpha");
+      GUIContent CShaderTint =
+ new GUIContent("Grass Mask Tint", "Tint the grass overlay color, or reduce it's overall effect with the alpha");
       //GUIContent CShadowMap = new GUIContent("Shadow Map", "Shadow Map for distant terrain");
 
       public override void DrawShaderGUI(MicroSplatShaderGUI shaderGUI, Material mat, MaterialEditor materialEditor, MaterialProperty[] props)
@@ -253,7 +249,5 @@ namespace JBooth.MicroSplat
       }
 
    }   
-   #endif
-
-
+#endif
 }

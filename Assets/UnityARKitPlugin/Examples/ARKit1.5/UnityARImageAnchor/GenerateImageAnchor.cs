@@ -1,48 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class GenerateImageAnchor : MonoBehaviour {
+public class GenerateImageAnchor : MonoBehaviour
+{
+    private GameObject imageAnchorGO;
+
+    [SerializeField] private GameObject prefabToGenerate;
 
 
-	[SerializeField]
-	private ARReferenceImage referenceImage;
+    [SerializeField] private ARReferenceImage referenceImage;
 
-	[SerializeField]
-	private GameObject prefabToGenerate;
+    // Use this for initialization
+    private void Start()
+    {
+        UnityARSessionNativeInterface.ARImageAnchorAddedEvent += AddImageAnchor;
+        UnityARSessionNativeInterface.ARImageAnchorUpdatedEvent += UpdateImageAnchor;
+        UnityARSessionNativeInterface.ARImageAnchorRemovedEvent += RemoveImageAnchor;
+    }
 
-	private GameObject imageAnchorGO;
+    private void AddImageAnchor(ARImageAnchor arImageAnchor)
+    {
+        Debug.LogFormat("image anchor added[{0}] : tracked => {1}", arImageAnchor.identifier, arImageAnchor.isTracked);
+        if (arImageAnchor.referenceImageName == referenceImage.imageName)
+        {
+            var position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);
+            var rotation = UnityARMatrixOps.GetRotation(arImageAnchor.transform);
 
-	// Use this for initialization
-	void Start () {
-		UnityARSessionNativeInterface.ARImageAnchorAddedEvent += AddImageAnchor;
-		UnityARSessionNativeInterface.ARImageAnchorUpdatedEvent += UpdateImageAnchor;
-		UnityARSessionNativeInterface.ARImageAnchorRemovedEvent += RemoveImageAnchor;
+            imageAnchorGO = Instantiate(prefabToGenerate, position, rotation);
+        }
+    }
 
-	}
-
-	void AddImageAnchor(ARImageAnchor arImageAnchor)
-	{
-		Debug.LogFormat("image anchor added[{0}] : tracked => {1}", arImageAnchor.identifier, arImageAnchor.isTracked);
-		if (arImageAnchor.referenceImageName == referenceImage.imageName) {
-			Vector3 position = UnityARMatrixOps.GetPosition (arImageAnchor.transform);
-			Quaternion rotation = UnityARMatrixOps.GetRotation (arImageAnchor.transform);
-
-			imageAnchorGO = Instantiate<GameObject> (prefabToGenerate, position, rotation);
-		}
-	}
-
-	void UpdateImageAnchor(ARImageAnchor arImageAnchor)
-	{
-		Debug.LogFormat("image anchor updated[{0}] : tracked => {1}", arImageAnchor.identifier, arImageAnchor.isTracked);
-		if (arImageAnchor.referenceImageName == referenceImage.imageName) {
+    private void UpdateImageAnchor(ARImageAnchor arImageAnchor)
+    {
+        Debug.LogFormat("image anchor updated[{0}] : tracked => {1}", arImageAnchor.identifier,
+            arImageAnchor.isTracked);
+        if (arImageAnchor.referenceImageName == referenceImage.imageName)
+        {
             if (arImageAnchor.isTracked)
             {
-                if (!imageAnchorGO.activeSelf)
-                {
-                    imageAnchorGO.SetActive(true);
-                }
+                if (!imageAnchorGO.activeSelf) imageAnchorGO.SetActive(true);
                 imageAnchorGO.transform.position = UnityARMatrixOps.GetPosition(arImageAnchor.transform);
                 imageAnchorGO.transform.rotation = UnityARMatrixOps.GetRotation(arImageAnchor.transform);
             }
@@ -51,28 +47,24 @@ public class GenerateImageAnchor : MonoBehaviour {
                 imageAnchorGO.SetActive(false);
             }
         }
+    }
 
-	}
+    private void RemoveImageAnchor(ARImageAnchor arImageAnchor)
+    {
+        Debug.LogFormat("image anchor removed[{0}] : tracked => {1}", arImageAnchor.identifier,
+            arImageAnchor.isTracked);
+        if (imageAnchorGO) Destroy(imageAnchorGO);
+    }
 
-	void RemoveImageAnchor(ARImageAnchor arImageAnchor)
-	{
-		Debug.LogFormat("image anchor removed[{0}] : tracked => {1}", arImageAnchor.identifier, arImageAnchor.isTracked);
-		if (imageAnchorGO) {
-			GameObject.Destroy (imageAnchorGO);
-		}
+    private void OnDestroy()
+    {
+        UnityARSessionNativeInterface.ARImageAnchorAddedEvent -= AddImageAnchor;
+        UnityARSessionNativeInterface.ARImageAnchorUpdatedEvent -= UpdateImageAnchor;
+        UnityARSessionNativeInterface.ARImageAnchorRemovedEvent -= RemoveImageAnchor;
+    }
 
-	}
-
-	void OnDestroy()
-	{
-		UnityARSessionNativeInterface.ARImageAnchorAddedEvent -= AddImageAnchor;
-		UnityARSessionNativeInterface.ARImageAnchorUpdatedEvent -= UpdateImageAnchor;
-		UnityARSessionNativeInterface.ARImageAnchorRemovedEvent -= RemoveImageAnchor;
-
-	}
-
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+    }
 }

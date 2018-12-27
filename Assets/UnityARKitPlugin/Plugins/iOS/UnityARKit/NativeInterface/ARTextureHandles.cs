@@ -1,9 +1,7 @@
 using System;
-using UnityEngine.XR.iOS;
 
 namespace UnityEngine.XR.iOS
 {
-
     public class ARTextureHandles
     {
         public struct ARTextureHandlesStruct
@@ -13,11 +11,13 @@ namespace UnityEngine.XR.iOS
             public IntPtr textureCbCr;
         }
 
-        private ARTextureHandlesStruct m_ARTextureHandlesStruct;
+        private readonly ARTextureHandlesStruct m_ARTextureHandlesStruct;
+
         public IntPtr TextureY
         {
             get { return m_ARTextureHandlesStruct.textureY; }
         }
+
         public IntPtr TextureCbCr
         {
             get { return m_ARTextureHandlesStruct.textureCbCr; }
@@ -36,7 +36,8 @@ namespace UnityEngine.XR.iOS
 #endif
         public bool IsNull()
         {
-            return (m_ARTextureHandlesStruct.textureY == IntPtr.Zero) || (m_ARTextureHandlesStruct.textureCbCr == IntPtr.Zero);
+            return m_ARTextureHandlesStruct.textureY == IntPtr.Zero ||
+                   m_ARTextureHandlesStruct.textureCbCr == IntPtr.Zero;
         }
 
 
@@ -45,15 +46,13 @@ namespace UnityEngine.XR.iOS
         {
             // This
             Debug.Assert(false, "should not call the default constructor for ARTextureHandles");
-            m_ARTextureHandlesStruct = new ARTextureHandlesStruct { textureY = IntPtr.Zero, textureCbCr = IntPtr.Zero };
+            m_ARTextureHandlesStruct = new ARTextureHandlesStruct {textureY = IntPtr.Zero, textureCbCr = IntPtr.Zero};
         }
 
         private ARTextureHandles(ARTextureHandles arTextureHandles)
         {
             Debug.Assert(false, "should not call the copy constructor for ARTextureHandles");
-            m_ARTextureHandlesStruct = new ARTextureHandlesStruct { textureY = IntPtr.Zero, textureCbCr = IntPtr.Zero };
+            m_ARTextureHandlesStruct = new ARTextureHandlesStruct {textureY = IntPtr.Zero, textureCbCr = IntPtr.Zero};
         }
-
     }
 }
-

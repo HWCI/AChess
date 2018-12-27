@@ -1,33 +1,32 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class GridScript : MonoBehaviour, IPointerClickHandler
 {
-	private Collider collider;
-	public delegate void onTouchTrigger ();
-	public event onTouchTrigger onTouchEvents;
+    public delegate void onTouchTrigger();
 
-	void Start()
-	{
-		collider = this.gameObject.GetComponent<Collider>();
-	}
+    private Collider collider;
 
-	void Update()
-	{
-		
-	}
+    public void OnPointerClick(PointerEventData pED)
+    {
+        MovementController.instance.SetTarget(transform);
+        Debug.Log("Clicked");
+    }
 
-	public void SetTarget()
-	{
-		MovementController.instance.SetTarget(this.transform);
-		Debug.Log("Clicked");
-	}
+    public event onTouchTrigger onTouchEvents;
 
-	public void OnPointerClick(PointerEventData pED)
-	{
-		MovementController.instance.SetTarget(this.transform);
-		Debug.Log("Clicked");
-	}
+    private void Start()
+    {
+        collider = gameObject.GetComponent<Collider>();
+    }
+
+    private void Update()
+    {
+    }
+
+    public void SetTarget()
+    {
+        MovementController.instance.SetTarget(transform);
+        Debug.Log("Clicked");
+    }
 }

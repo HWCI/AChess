@@ -1,53 +1,50 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 
 namespace UnityEngine.XR.iOS
 {
+    public struct UnityARPlaneGeometry
+    {
+        public int vertexCount;
+        public IntPtr vertices;
+        public int textureCoordinateCount;
+        public IntPtr textureCoordinates;
+        public int triangleCount;
+        public IntPtr triangleIndices;
+        public int boundaryVertexCount;
+        public IntPtr boundaryVertices;
+    }
 
-	public struct UnityARPlaneGeometry
-	{
-		public int vertexCount;
-		public IntPtr vertices;
-		public int textureCoordinateCount;
-		public IntPtr textureCoordinates;
-		public int triangleCount;
-		public IntPtr triangleIndices;
-		public int boundaryVertexCount;
-		public IntPtr boundaryVertices;
+    public struct UnityARAnchorData
+    {
+        public IntPtr ptrIdentifier;
 
-	}
+        /**
+         The transformation matrix that defines the anchor's rotation, translation and scale in world coordinates.
+         */
+        public UnityARMatrix4x4 transform;
 
-	public struct UnityARAnchorData
-	{
-		public IntPtr ptrIdentifier;
+        /**
+         The alignment of the plane.
+         */
 
-		/**
- 		The transformation matrix that defines the anchor's rotation, translation and scale in world coordinates.
-		 */
-		public UnityARMatrix4x4 transform;
+        public ARPlaneAnchorAlignment alignment;
 
-		/**
-		 The alignment of the plane.
-		 */
-
-		public ARPlaneAnchorAlignment alignment;
-
-		/**
+        /**
         The center of the plane in the anchor’s coordinate space.
         */
 
-		public Vector4 center;
+        public Vector4 center;
 
-		/**
+        /**
         The extent of the plane in the anchor’s coordinate space.
          */
-		public Vector4 extent;
+        public Vector4 extent;
 
-		/**
+        /**
         The geometry that describes more accurately the surface found.
          */
-		public UnityARPlaneGeometry planeGeometry;
-	}
+        public UnityARPlaneGeometry planeGeometry;
+    }
 
 
 #if !UNITY_EDITOR
@@ -98,7 +95,7 @@ namespace UnityEngine.XR.iOS
 			Marshal.Copy (ptrIndices, workIndices, 0, numIndices);
 
 			int[] triIndices = new int[numIndices];
-			for (int count = 0; count < numIndices; count+=3) {
+			for (int count = 0; count < numIndices; count += 3) {
 				//reverse winding order
 				triIndices [count] = workIndices [count];
 				triIndices [count + 1] = workIndices [count + 2];
@@ -174,4 +171,3 @@ namespace UnityEngine.XR.iOS
 	}
 #endif
 }
-

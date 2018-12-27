@@ -3,8 +3,7 @@
 // Copyright (c) Jason Booth
 //////////////////////////////////////////////////////
 
-using System.Collections;
-using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 // layout
@@ -26,111 +25,104 @@ using UnityEngine;
 // 15 Reserved for initialization marking
 
 // because unity's HDR import pipeline is broke (assumes gamma, so breaks data in textures)
-public class MicroSplatPropData : ScriptableObject 
+public class MicroSplatPropData : ScriptableObject
 {
-   const int sMaxTextures = 32;
-   [HideInInspector]
-   public Color[] values = new Color[sMaxTextures*16];
+    private const int sMaxTextures = 32;
 
-   Texture2D tex;
+    [HideInInspector] public AnimationCurve geoCurve = AnimationCurve.Linear(0, 0.0f, 0, 0.0f);
 
-   [HideInInspector]
-   public AnimationCurve geoCurve = AnimationCurve.Linear(0, 0.0f, 0, 0.0f);
-   Texture2D geoTex;
+    private Texture2D geoTex;
 
-   void RevisionData()
-   {
-      // revision from 16 to 32 max textures
-      if (values.Length == (16 * 16))
-      {
-         Color[] c = new Color[sMaxTextures * 16];
-         for (int x = 0; x < 16; ++x)
-         {
-            for (int y = 0; y < 16; ++y)
-            {
-               c[y * sMaxTextures + x] = values[y * 16 + x];
-            }
-         }
-         values = c;
-         #if UNITY_EDITOR
-         UnityEditor.EditorUtility.SetDirty(this);
-         #endif
-      }
-   }
+    private Texture2D tex;
 
-   public Color GetValue(int x, int y)
-   {
-      RevisionData();
-      return values[y * sMaxTextures + x];
-   }
+    [HideInInspector] public Color[] values = new Color[sMaxTextures * 16];
 
-   public void SetValue(int x, int y, Color c)
-   {
-      RevisionData();
-      #if UNITY_EDITOR
-      UnityEditor.Undo.RecordObject(this, "Changed Value");
-      #endif
+    private void RevisionData()
+    {
+        // revision from 16 to 32 max textures
+        if (values.Length == 16 * 16)
+        {
+            var c = new Color[sMaxTextures * 16];
+            for (var x = 0; x < 16; ++x)
+            for (var y = 0; y < 16; ++y)
+                c[y * sMaxTextures + x] = values[y * 16 + x];
+            values = c;
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(this);
+#endif
+        }
+    }
 
-      values[y * sMaxTextures + x] = c;
+    public Color GetValue(int x, int y)
+    {
+        RevisionData();
+        return values[y * sMaxTextures + x];
+    }
 
-      #if UNITY_EDITOR
-      UnityEditor.EditorUtility.SetDirty(this);
-      #endif
-   }
+    public void SetValue(int x, int y, Color c)
+    {
+        RevisionData();
+#if UNITY_EDITOR
+        Undo.RecordObject(this, "Changed Value");
+#endif
 
-   public void SetValue(int x, int y, int channel, float value)
-   {
-      RevisionData();
-      #if UNITY_EDITOR
-      UnityEditor.Undo.RecordObject(this, "Changed Value");
-      #endif
-      int index = y * sMaxTextures + x;
-      Color c = values[index];
-      c[channel] = value;
-      values[index] = c;
+        values[y * sMaxTextures + x] = c;
 
-      #if UNITY_EDITOR
-      UnityEditor.EditorUtility.SetDirty(this);
-      #endif
-   }
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+#endif
+    }
 
-   public Texture2D GetTexture()
-   {
-      RevisionData();
-      if (tex == null)
-      {
-         if (Application.platform == RuntimePlatform.Switch)
-         {
-            tex = new Texture2D(sMaxTextures, 16, TextureFormat.RGBAHalf, false, true);
-         }
-         else
-         {
-            tex = new Texture2D(sMaxTextures, 16, TextureFormat.RGBAFloat, false, true);
-         }
-         tex.hideFlags = HideFlags.HideAndDontSave;
-         tex.wrapMode = TextureWrapMode.Clamp;
-         tex.filterMode = FilterMode.Point;
+    public void SetValue(int x, int y, int channel, float value)
+    {
+        RevisionData();
+#if UNITY_EDITOR
+        Undo.RecordObject(this, "Changed Value");
+#endif
+        var index = y * sMaxTextures + x;
+        var c = values[index];
+        c[channel] = value;
+        values[index] = c;
 
-      }
-      tex.SetPixels(values);
-      tex.Apply();
-      return tex;
-   }
+#if UNITY_EDITOR
+        EditorUtility.SetDirty(this);
+#endif
+    }
 
-   public Texture2D GetGeoCurve()
-   {
-      if (geoTex == null)
-      {
-         geoTex = new Texture2D(256, 1, TextureFormat.RHalf, false, true);
-         geoTex .hideFlags = HideFlags.HideAndDontSave;
-      }
-      for (int i = 0; i < 256; ++i)
-      {
-         float v = geoCurve.Evaluate((float)i / 255.0f);
-         geoTex.SetPixel(i, 0, new Color(v, v, v, v));
-      }
-      geoTex.Apply();
-      return geoTex;
-   }
+    public Texture2D GetTexture()
+    {
+        RevisionData();
+        if (tex == null)
+        {
+            if (Application.platform == RuntimePlatform.Switch)
+                tex = new Texture2D(sMaxTextures, 16, TextureFormat.RGBAHalf, false, true);
+            else
+                tex = new Texture2D(sMaxTextures, 16, TextureFormat.RGBAFloat, false, true);
+            tex.hideFlags = HideFlags.HideAndDontSave;
+            tex.wrapMode = TextureWrapMode.Clamp;
+            tex.filterMode = FilterMode.Point;
+        }
+
+        tex.SetPixels(values);
+        tex.Apply();
+        return tex;
+    }
+
+    public Texture2D GetGeoCurve()
+    {
+        if (geoTex == null)
+        {
+            geoTex = new Texture2D(256, 1, TextureFormat.RHalf, false, true);
+            geoTex.hideFlags = HideFlags.HideAndDontSave;
+        }
+
+        for (var i = 0; i < 256; ++i)
+        {
+            var v = geoCurve.Evaluate(i / 255.0f);
+            geoTex.SetPixel(i, 0, new Color(v, v, v, v));
+        }
+
+        geoTex.Apply();
+        return geoTex;
+    }
 }
-

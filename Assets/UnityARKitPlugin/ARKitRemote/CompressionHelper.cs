@@ -3,63 +3,63 @@ using System.IO.Compression;
 
 namespace UnityEngine.XR.iOS
 {
+    public static class CompressionHelper
+    {
+	    /// <summary>
+	    ///     Compress using deflate.
+	    /// </summary>
+	    /// <returns>The byte compress.</returns>
+	    /// <param name="source">Source.</param>
+	    public static byte[] ByteArrayCompress(byte[] source)
+        {
+            using (var ms = new MemoryStream())
+            using (var compressedDStream = new DeflateStream(ms, CompressionMode.Compress, true))
+            {
+                compressedDStream.Write(source, 0, source.Length);
 
-	public static class CompressionHelper 
-	{
+                compressedDStream.Close();
 
-		/// <summary>
-		/// Compress using deflate.
-		/// </summary>
-		/// <returns>The byte compress.</returns>
-		/// <param name="source">Source.</param>
-		public static byte[] ByteArrayCompress(byte[] source)
-		{
-			using (MemoryStream ms = new MemoryStream())
-			using (DeflateStream compressedDStream = new DeflateStream(ms, CompressionMode.Compress, true))
-			{
-				compressedDStream.Write(source, 0, source.Length);
+                var destination = ms.ToArray();
 
-				compressedDStream.Close();
+                Debug.Log(source.Length + " vs " + ms.Length);
 
-				byte[] destination = ms.ToArray();
+                return destination;
+            }
+        }
 
-				Debug.Log(source.Length.ToString() + " vs " + ms.Length.ToString());
+	    /// <summary>
+	    ///     Decompress using deflate.
+	    /// </summary>
+	    /// <returns>The byte decompress.</returns>
+	    /// <param name="source">Source.</param>
+	    public static byte[] ByteArrayDecompress(byte[] source)
+        {
+            using (var input = new MemoryStream(source))
+            using (var output = new MemoryStream())
+            using (var decompressedDstream = new DeflateStream(input, CompressionMode.Decompress))
+            {
+                decompressedDstream.CopyTo(output);
 
-				return destination;
-			}
-		}
+                var destination = output.ToArray();
 
-		/// <summary>
-		/// Decompress using deflate.
-		/// </summary>
-		/// <returns>The byte decompress.</returns>
-		/// <param name="source">Source.</param>
-		public static byte[] ByteArrayDecompress(byte[] source)
-		{
-			using (MemoryStream input = new MemoryStream(source))
-			using (MemoryStream output = new MemoryStream())
-			using (DeflateStream decompressedDstream = new DeflateStream(input, CompressionMode.Decompress))
-			{
-				decompressedDstream.CopyTo(output);
+                Debug.Log("Decompress Size : " + output.Length);
 
-				byte[] destination = output.ToArray();
+                return destination;
+            }
+        }
 
-				Debug.Log("Decompress Size : " + output.Length);
+        public static long CopyTo(this Stream source, Stream destination)
+        {
+            var buffer = new byte[2048];
+            int bytesRead;
+            long totalBytes = 0;
+            while ((bytesRead = source.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                destination.Write(buffer, 0, bytesRead);
+                totalBytes += bytesRead;
+            }
 
-				return destination;
-			}
-		}
-
-		public static long CopyTo(this Stream source, Stream destination) {
-			byte[] buffer = new byte[2048];
-			int bytesRead;
-			long totalBytes = 0;
-			while((bytesRead = source.Read(buffer, 0, buffer.Length)) > 0) {
-				destination.Write(buffer, 0, bytesRead);
-				totalBytes += bytesRead;
-			}
-			return totalBytes;
-		}
-
-	}
+            return totalBytes;
+        }
+    }
 }
