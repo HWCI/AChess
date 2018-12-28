@@ -151,6 +151,7 @@
             </e>
           </e>
         </e>
+        <e p="UIManager.cs" t="Include" />
         <e p="UnityARKitPlugin" t="Include">
           <e p="ARKitRemote" t="Include">
             <e p="ARKitFaceTrackingRemoteConnection.cs" t="Include" />

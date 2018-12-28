@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
             //effectively similar to calling HitTest with ARHitTestResultType.ARHitTestResultTypeExistingPlaneUsingExtent
             if (Physics.Raycast(ray, out hit, maxRayDistance))
             {
-                SetScene(hit.transform.position, hit.transform.parent);
+                SetScene(hit.point, hit.transform.parent);
 
                 //we're going to get the position from the contact point
                 Debug.Log(string.Format("x:{0:0.######} y:{1:0.######} z:{2:0.######}", hit.point.x, hit.point.y,
@@ -56,7 +56,7 @@ public class GameManager : MonoBehaviour
         {
             //_currentScene = Instantiate(planePrefab, atPosition, Quaternion.identity, parent);
             _currentScene.transform.position = atPosition;
-            _currentScene.transform.parent = parent;
+            //_currentScene.transform.parent = parent;
             _currentScene.SetActive(true);
             state = ARState.PlacedScene;
         }
