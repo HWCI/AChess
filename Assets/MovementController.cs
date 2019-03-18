@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.XR.iOS;
 
 public class MovementController : MonoBehaviour
 {
@@ -60,7 +62,7 @@ public class MovementController : MonoBehaviour
 		if (Input.touchCount > 0 )
 		{
 			var touch = Input.GetTouch(0);
-			if (touch.phase == TouchPhase.Began)
+			/*if (touch.phase == TouchPhase.Began)
 			{
 				var screenPosition = Camera.main.ScreenToViewportPoint(touch.position);
 				ARPoint point = new ARPoint {
@@ -98,11 +100,40 @@ public class MovementController : MonoBehaviour
                     _chara = hit.transform.GetComponent<CharacterScript>();
             }
 					}
-				}
+				}*/
+            RaycastHit hit;
+            Vector3 inputpos;
+            inputpos = touch.position;
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(inputpos), out hit, 100))
+            {
+                Debug.Log(hit.collider.gameObject.name);
+                if (hit.collider.gameObject.CompareTag("Grid"))
+                    if (_chara != null)
+                    {
+                        if (_target == hit.transform)
+                        {
+                            _chara.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+                            Destroy(_trail);
+                        }
+                        else
+                        {
+                            _target = hit.transform;
+                            if (_trail != null)
+                            {
+                                Destroy(_trail);
+                            }
+                            _trail = Instantiate(Trail, _chara.transform.position, Quaternion.identity);
+                            _trail.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+                        }
+                    }
 
+                if (hit.collider.gameObject.CompareTag("Player"))
+                    _chara = hit.transform.GetComponent<CharacterScript>();
+            }
+    
 			}
 		}
-#endif
+#endif 
 
     public void SetChara(CharacterScript chara)
     {

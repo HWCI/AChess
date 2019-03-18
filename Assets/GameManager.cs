@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.XR.iOS;
 
 public class GameManager : MonoBehaviour
@@ -18,6 +19,7 @@ public class GameManager : MonoBehaviour
     public GameObject planePrefab;
     private UnityARAnchorManager unityARAnchorManager;
     public GameObject _currentScene;
+    public NavMeshData meshdata;
 
     // Use this for initialization
     private void Start()
@@ -55,7 +57,12 @@ public class GameManager : MonoBehaviour
         if (!_currentScene.activeSelf)
         {
             //_currentScene = Instantiate(planePrefab, atPosition, Quaternion.identity, parent);
+            Vector3 offset = (meshdata.position - _currentScene.transform.position);
             _currentScene.transform.position = atPosition;
+            meshdata.position = atPosition;
+            NavMesh.RemoveAllNavMeshData();
+            NavMesh.AddNavMeshData(meshdata);
+            
             //_currentScene.transform.parent = parent;
             _currentScene.SetActive(true);
             state = ARState.PlacedScene;

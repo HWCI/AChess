@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.XR.iOS;
 
 public class BallMover : MonoBehaviour
 {
@@ -22,7 +24,7 @@ public class BallMover : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-#if UNITY_EDITOR //we will only use this script on the editor side, though there is nothing that would prevent it from working on device
+#if !UNITY_EDITOR //we will only use this script on the editor side, though there is nothing that would prevent it from working on device
         if (Input.GetMouseButton(0))
         {
             var ray = Camera.main.ScreenPointToRay(Input.mousePosition);

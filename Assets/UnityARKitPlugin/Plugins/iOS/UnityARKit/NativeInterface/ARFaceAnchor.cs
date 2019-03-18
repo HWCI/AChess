@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using AOT;
 
 namespace UnityEngine.XR.iOS
 {
