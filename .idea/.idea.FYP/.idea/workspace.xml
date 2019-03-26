@@ -3,6 +3,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 84aa50a... un merge
   <component name="ChangeListManager">
     <list default="true" id="8bcb5e66-6c47-491c-9aba-0abb11b9ef5f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.FYP/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.FYP/.idea/contentModel.xml" afterDir="false" />
@@ -254,6 +257,7 @@
         <option name="show-all-files" value="false" />
       </pane>
     </panes>
+<<<<<<< HEAD
 =======
   <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="80" />
@@ -275,11 +279,27 @@
     <option name="width" value="1440" />
     <option name="height" value="998" />
 >>>>>>> parent of 3dd12b6... Backup
+=======
+>>>>>>> parent of 84aa50a... un merge
   </component>
   <component name="PropertiesComponent">
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
     <property name="Rider.ProjectViewActivator.IsNotFirstRun" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="D:/Program Files/Git/bin/git.exe" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
   </component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="Attach to Unity Editor &amp; Play" type="UNITY_DEBUG_RUN_CONFIGURATION" factoryName="UNITY_ATTACH_AND_PLAY" show_console_on_std_err="false" show_console_on_std_out="false" port="50000" address="localhost">
@@ -300,6 +320,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 84aa50a... un merge
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -584,10 +607,13 @@
       </provider>
     </entry>
   </component>
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 3dd12b6... Backup
 =======
 >>>>>>> parent of 3dd12b6... Backup
 =======
 >>>>>>> parent of 3dd12b6... Backup
+=======
+>>>>>>> parent of 84aa50a... un merge
 </project>

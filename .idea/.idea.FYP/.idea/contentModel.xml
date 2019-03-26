@@ -10,6 +10,9 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of 84aa50a... un merge
         <e p="CharacterScript.cs" t="Include" />
         <e p="GameManager.cs" t="Include" />
         <e p="GridScript.cs" t="Include" />
@@ -445,6 +448,7 @@
             </e>
           </e>
         </e>
+<<<<<<< HEAD
 =======
 >>>>>>> parent of 3dd12b6... Backup
 =======
@@ -453,6 +457,8 @@
 >>>>>>> parent of 3dd12b6... Backup
 =======
 >>>>>>> parent of 26a45aa... Merge
+=======
+>>>>>>> parent of 84aa50a... un merge
         <e p="Store Assets" t="Include">
           <e p="MicroSplat" t="Include">
             <e p="Core" t="Include">
