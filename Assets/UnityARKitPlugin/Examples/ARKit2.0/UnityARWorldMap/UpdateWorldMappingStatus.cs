@@ -1,31 +1,27 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR.iOS;
 
-public class UpdateWorldMappingStatus : MonoBehaviour 
+public class UpdateWorldMappingStatus : MonoBehaviour
 {
+    public Text text;
+    public Text tracking;
 
-	public Text text;
-	public Text tracking;
 
+    // Use this for initialization
+    private void Start()
+    {
+        UnityARSessionNativeInterface.ARFrameUpdatedEvent += CheckWorldMapStatus;
+    }
 
-	// Use this for initialization
-	void Start () 
-	{
-		UnityARSessionNativeInterface.ARFrameUpdatedEvent += CheckWorldMapStatus;
-	}
+    private void CheckWorldMapStatus(UnityARCamera cam)
+    {
+        text.text = cam.worldMappingStatus.ToString();
+        tracking.text = cam.trackingState + " " + cam.trackingReason;
+    }
 
-	void CheckWorldMapStatus(UnityARCamera cam)
-	{
-		text.text = cam.worldMappingStatus.ToString ();
-		tracking.text = cam.trackingState.ToString () + " " + cam.trackingReason.ToString ();
-	}
-
-	void OnDestroy()
-	{
-		UnityARSessionNativeInterface.ARFrameUpdatedEvent -= CheckWorldMapStatus;
-	}
-
+    private void OnDestroy()
+    {
+        UnityARSessionNativeInterface.ARFrameUpdatedEvent -= CheckWorldMapStatus;
+    }
 }

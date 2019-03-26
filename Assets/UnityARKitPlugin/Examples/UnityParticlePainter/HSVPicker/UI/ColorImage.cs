@@ -1,13 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
 [RequireComponent(typeof(Image))]
 public class ColorImage : MonoBehaviour
 {
-    public ColorPicker picker;
-
     private Image image;
+    public ColorPicker picker;
 
     private void Awake()
     {

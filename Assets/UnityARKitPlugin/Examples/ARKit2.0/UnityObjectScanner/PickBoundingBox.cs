@@ -1,10 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace UnityEngine.XR.iOS
+﻿namespace UnityEngine.XR.iOS
 {
     public class PickBoundingBox : MonoBehaviour
     {
+        private const float k_PinchTurnRatio = Mathf.PI / 2;
+
+        private const float k_MinTurnAngle = 0f;
+
+        private const float k_PinchRatio = 1f;
+
+        private const float k_MinPinchDistance = 0f;
+
+        private ARHitTestResult m_ARHit;
+
+        [SerializeField] private Transform m_Back;
+
+        private Vector3 m_BeganFacePosition;
+
+        [SerializeField] private Transform m_Bottom;
+
+        [SerializeField] private Transform m_Front;
+
+        private Bounds m_InitialPinchBounds;
+
+        private float m_InitialPinchDistance;
+
+        private HitType m_LastHitType = HitType.None;
+
+#if UNITY_EDITOR
+        private Vector3 m_LastTouchPosition;
+#endif
+
+        [SerializeField] private Transform m_Left;
+
+        private RaycastHit m_PhysicsHit;
+
+        private float m_PinchDistance;
+
+        private float m_PinchDistanceDelta;
+
+        [SerializeField] private Transform m_Right;
+
+        [SerializeField] private Material m_SelectedMaterial;
+
+        [SerializeField] private Transform m_Top;
+
+        private float m_TurnAngleDelta;
+
+        [SerializeField] private Material m_UnselectedMaterial;
+
         public Bounds bounds
         {
             get
@@ -42,70 +85,9 @@ namespace UnityEngine.XR.iOS
             }
         }
 
-        enum HitType
+        private float rotationOnYAxis
         {
-            None,
-            BoxFace,
-            ARPlane,
-            Rotate
-        }
-
-        [SerializeField]
-        Transform m_Top;
-
-        [SerializeField]
-        Transform m_Bottom;
-
-        [SerializeField]
-        Transform m_Left;
-
-        [SerializeField]
-        Transform m_Right;
-
-        [SerializeField]
-        Transform m_Back;
-
-        [SerializeField]
-        Transform m_Front;
-
-        [SerializeField]
-        Material m_UnselectedMaterial;
-
-        [SerializeField]
-        Material m_SelectedMaterial;
-
-        RaycastHit m_PhysicsHit;
-
-        ARHitTestResult m_ARHit;
-
-        Vector3 m_BeganFacePosition;
-
-        HitType m_LastHitType = HitType.None;
-
-        float m_InitialPinchDistance;
-
-        Bounds m_InitialPinchBounds;
-
-        const float k_PinchTurnRatio = Mathf.PI / 2;
-
-        const float k_MinTurnAngle = 0f;
-    
-        const float k_PinchRatio = 1f;
-
-        const float k_MinPinchDistance = 0f;
-    
-        float m_TurnAngleDelta;
-    
-        float m_PinchDistanceDelta;
-
-        float m_PinchDistance;
-
-        float rotationOnYAxis
-        {
-            get
-            {
-                return transform.rotation.eulerAngles.y;
-            }
+            get { return transform.rotation.eulerAngles.y; }
 
             set
             {
@@ -115,15 +97,12 @@ namespace UnityEngine.XR.iOS
             }
         }
 
-        bool touched
+        private bool touched
         {
-            get
-            {
-                return Input.GetMouseButton(0) || (Input.touchCount > 0);
-            }
+            get { return Input.GetMouseButton(0) || Input.touchCount > 0; }
         }
 
-        bool DoPhysicsRaycast(Touch touch, ref RaycastHit hitOut)
+        private bool DoPhysicsRaycast(Touch touch, ref RaycastHit hitOut)
         {
             var ray = Camera.main.ScreenPointToRay(touch.position);
             var layerMask = 1 << gameObject.layer;
@@ -135,16 +114,17 @@ namespace UnityEngine.XR.iOS
             return true;
         }
 
-        bool DoARRaycast(Touch touch, ref ARHitTestResult hitOut)
+        private bool DoARRaycast(Touch touch, ref ARHitTestResult hitOut)
         {
             var screenPosition = Camera.main.ScreenToViewportPoint(touch.position);
-            ARPoint point = new ARPoint()
+            var point = new ARPoint
             {
                 x = screenPosition.x,
                 y = screenPosition.y
             };
 
-            var hitResults = UnityARSessionNativeInterface.GetARSessionNativeInterface().HitTest(point, ARHitTestResultType.ARHitTestResultTypeExistingPlaneUsingExtent);
+            var hitResults = UnityARSessionNativeInterface.GetARSessionNativeInterface()
+                .HitTest(point, ARHitTestResultType.ARHitTestResultTypeExistingPlaneUsingExtent);
             if (hitResults.Count < 1)
                 return false;
 
@@ -152,13 +132,13 @@ namespace UnityEngine.XR.iOS
             return true;
         }
 
-        void SetFaceMaterial(Collider collider, Material material)
+        private void SetFaceMaterial(Collider collider, Material material)
         {
             var meshRenderer = collider.gameObject.GetComponent<MeshRenderer>();
             meshRenderer.material = material;
         }
 
-        void DoBegan(Touch touch)
+        private void DoBegan(Touch touch)
         {
             if (Input.touchCount > 1)
                 return;
@@ -175,21 +155,18 @@ namespace UnityEngine.XR.iOS
             }
 
             // Check AR plane
-            ARHitTestResult arHit = new ARHitTestResult();
+            var arHit = new ARHitTestResult();
             if (DoARRaycast(touch, ref arHit))
             {
                 if (m_ARHit.anchorIdentifier != arHit.anchorIdentifier)
-                {
-                    // This means we've hit a different plane, so move immediately
                     transform.position = UnityARMatrixOps.GetPosition(arHit.worldTransform);
-                }
 
                 m_LastHitType = HitType.ARPlane;
                 m_ARHit = arHit;
             }
         }
 
-        void DoRotateScale()
+        private void DoRotateScale()
         {
             Calculate();
 
@@ -212,7 +189,7 @@ namespace UnityEngine.XR.iOS
             bounds = new Bounds(center, size);
         }
 
-        void DoMoved(Touch touch)
+        private void DoMoved(Touch touch)
         {
             if (Input.touchCount == 2)
             {
@@ -237,12 +214,12 @@ namespace UnityEngine.XR.iOS
             }
         }
 
-        Transform GetFaceFromCollider(Collider collider)
+        private Transform GetFaceFromCollider(Collider collider)
         {
             return collider.gameObject.transform.parent.parent;
         }
 
-        void MoveFace(Touch touch)
+        private void MoveFace(Touch touch)
         {
             // http://morroworks.com/Content/Docs/Rays%20closest%20point.pdf
 
@@ -272,7 +249,7 @@ namespace UnityEngine.XR.iOS
             if (faceTransform == m_Top || faceTransform == m_Bottom)
             {
                 var length = m_Top.localPosition.y - m_Bottom.localPosition.y;
-                
+
                 AdjustY(m_Left, length);
                 AdjustY(m_Right, length);
                 AdjustY(m_Back, length);
@@ -302,7 +279,7 @@ namespace UnityEngine.XR.iOS
             Recenter();
         }
 
-        void Recenter()
+        private void Recenter()
         {
             // Recenter the box
             var center = bounds.center;
@@ -318,7 +295,7 @@ namespace UnityEngine.XR.iOS
             m_Right.transform.position -= delta;
         }
 
-        void AdjustX(Transform face, float length)
+        private void AdjustX(Transform face, float length)
         {
             var localScale = face.localScale;
             localScale.x = length;
@@ -329,7 +306,7 @@ namespace UnityEngine.XR.iOS
             face.localPosition = localPosition;
         }
 
-        void AdjustY(Transform face, float length)
+        private void AdjustY(Transform face, float length)
         {
             var localScale = face.localScale;
             localScale.y = length;
@@ -340,7 +317,7 @@ namespace UnityEngine.XR.iOS
             face.localPosition = localPosition;
         }
 
-        void AdjustZ(Transform face, float length)
+        private void AdjustZ(Transform face, float length)
         {
             var localScale = face.localScale;
             localScale.z = length;
@@ -351,9 +328,9 @@ namespace UnityEngine.XR.iOS
             face.localPosition = localPosition;
         }
 
-        void MovePlane(Touch touch)
+        private void MovePlane(Touch touch)
         {
-            ARHitTestResult arHit = new ARHitTestResult();
+            var arHit = new ARHitTestResult();
             if (DoARRaycast(touch, ref arHit))
             {
                 var hitPosition = UnityARMatrixOps.GetPosition(arHit.worldTransform);
@@ -375,11 +352,7 @@ namespace UnityEngine.XR.iOS
             }
         }
 
-#if UNITY_EDITOR
-        Vector3 m_LastTouchPosition;
-#endif
-
-        Touch GetTouch()
+        private Touch GetTouch()
         {
 #if UNITY_EDITOR
             var touch = new Touch();
@@ -398,7 +371,7 @@ namespace UnityEngine.XR.iOS
 #endif
         }
 
-        void Update()
+        private void Update()
         {
             if (touched)
             {
@@ -420,23 +393,23 @@ namespace UnityEngine.XR.iOS
             }
         }
 
-        void ResetMaterial()
+        private void ResetMaterial()
         {
-            if ((m_LastHitType == HitType.BoxFace) && (m_PhysicsHit.collider != null))
+            if (m_LastHitType == HitType.BoxFace && m_PhysicsHit.collider != null)
                 SetFaceMaterial(m_PhysicsHit.collider, m_UnselectedMaterial);
         }
 
-        void Calculate()
+        private void Calculate()
         {
             m_PinchDistance = m_PinchDistanceDelta = 0f;
             m_TurnAngleDelta = 0f;
-    
+
             // if two fingers are touching the screen at the same time ...
             if (Input.touchCount != 2)
                 return;
 
-            Touch touch1 = Input.touches[0];
-            Touch touch2 = Input.touches[1];
+            var touch1 = Input.touches[0];
+            var touch2 = Input.touches[1];
 
             // ... if at least one of them moved ...
             // if (touch1.phase != TouchPhase.Moved && touch2.phase != TouchPhase.Moved)
@@ -444,21 +417,20 @@ namespace UnityEngine.XR.iOS
 
             // ... check the delta distance between them ...
             m_PinchDistance = Vector2.Distance(touch1.position, touch2.position);
-            float prevDistance = Vector2.Distance(touch1.position - touch1.deltaPosition,
-                                                touch2.position - touch2.deltaPosition);
+            var prevDistance = Vector2.Distance(touch1.position - touch1.deltaPosition,
+                touch2.position - touch2.deltaPosition);
             m_PinchDistanceDelta = m_PinchDistance - prevDistance;
 
             // ... if it's greater than a minimum threshold, it's a pinch!
-            if (Mathf.Abs(m_PinchDistanceDelta) > k_MinPinchDistance) {
+            if (Mathf.Abs(m_PinchDistanceDelta) > k_MinPinchDistance)
                 m_PinchDistanceDelta *= k_PinchRatio;
-            } else {
+            else
                 m_PinchDistance = m_PinchDistanceDelta = 0;
-            }
 
             // ... or check the delta angle between them ...
             var turnAngle = Angle(touch1.position, touch2.position);
-            float prevTurn = Angle(touch1.position - touch1.deltaPosition,
-                                touch2.position - touch2.deltaPosition);
+            var prevTurn = Angle(touch1.position - touch1.deltaPosition,
+                touch2.position - touch2.deltaPosition);
             m_TurnAngleDelta = Mathf.DeltaAngle(prevTurn, turnAngle);
 
             // ... if it's greater than a minimum threshold, it's a turn!
@@ -466,19 +438,26 @@ namespace UnityEngine.XR.iOS
                 m_TurnAngleDelta *= k_PinchTurnRatio;
         }
 
-        static float Angle (Vector2 pos1, Vector2 pos2)
+        private static float Angle(Vector2 pos1, Vector2 pos2)
         {
-            Vector2 from = pos2 - pos1;
-            Vector2 to = new Vector2(1, 0);
-    
-            float result = Vector2.Angle( from, to );
-            Vector3 cross = Vector3.Cross( from, to );
-    
+            var from = pos2 - pos1;
+            var to = new Vector2(1, 0);
+
+            var result = Vector2.Angle(from, to);
+            var cross = Vector3.Cross(from, to);
+
             if (cross.z > 0f)
                 result = 360f - result;
-    
+
             return result;
+        }
+
+        private enum HitType
+        {
+            None,
+            BoxFace,
+            ARPlane,
+            Rotate
         }
     }
 }
-

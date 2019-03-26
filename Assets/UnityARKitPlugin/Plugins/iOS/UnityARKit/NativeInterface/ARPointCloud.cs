@@ -1,43 +1,37 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
-
 
 namespace UnityEngine.XR.iOS
 {
-	public class ARPointCloud 
-	{
-		IntPtr m_Ptr;
+    public class ARPointCloud
+    {
+        internal IntPtr nativePtr { get; private set; }
 
-		internal IntPtr nativePtr { get { return m_Ptr; } }
+        public int Count
+        {
+            get { return pointCloud_GetCount(nativePtr); }
+        }
 
-		public int Count
-		{
-			get { return pointCloud_GetCount(m_Ptr); }
-		}
+        public Vector3[] Points
+        {
+            get { return GetPoints(); }
+        }
 
-		public Vector3[] Points 
-		{
-			get { return GetPoints(); }
-		}
+        internal static ARPointCloud FromPtr(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero)
+                return null;
 
-		internal static ARPointCloud FromPtr(IntPtr ptr)
-		{
-			if (ptr == IntPtr.Zero)
-				return null;
+            return new ARPointCloud(ptr);
+        }
 
-			return new ARPointCloud(ptr);
-		}
+        internal ARPointCloud(IntPtr ptr)
+        {
+            if (ptr == IntPtr.Zero)
+                throw new ArgumentException("ptr may not be IntPtr.Zero");
 
-		internal ARPointCloud(IntPtr ptr)
-		{
-			if (ptr == IntPtr.Zero)
-				throw new ArgumentException("ptr may not be IntPtr.Zero");
-
-			m_Ptr = ptr;
-		}
+            nativePtr = ptr;
+        }
 #if !UNITY_EDITOR && UNITY_IOS
 		[DllImport("__Internal")]
 		static extern int pointCloud_GetCount(IntPtr ptr);
@@ -46,38 +40,39 @@ namespace UnityEngine.XR.iOS
 		static extern IntPtr pointCloud_GetPointsPtr(IntPtr ptr);
 
 #else
-		static int pointCloud_GetCount(IntPtr ptr) { return 0; }
-		static IntPtr pointCloud_GetPointsPtr(IntPtr ptr) { return IntPtr.Zero; }
+        private static int pointCloud_GetCount(IntPtr ptr)
+        {
+            return 0;
+        }
+
+        private static IntPtr pointCloud_GetPointsPtr(IntPtr ptr)
+        {
+            return IntPtr.Zero;
+        }
 #endif
 
-		Vector3[] GetPoints()
-		{
-			IntPtr pointsPtr = pointCloud_GetPointsPtr (m_Ptr);
-			int pointCount = Count;
-			if (pointCount <= 0 || pointsPtr == IntPtr.Zero) 
-			{
-				return null;
-			}
-			else 
-			{
-				// Load the results into a managed array.
-				var floatCount = pointCount * 4;
-				float [] resultVertices = new float[floatCount];
-				Marshal.Copy(pointsPtr, resultVertices, 0, floatCount);
+        private Vector3[] GetPoints()
+        {
+            var pointsPtr = pointCloud_GetPointsPtr(nativePtr);
+            var pointCount = Count;
+            if (pointCount <= 0 || pointsPtr == IntPtr.Zero) return null;
 
-				Vector3[] verts = new Vector3[pointCount];
+            // Load the results into a managed array.
+            var floatCount = pointCount * 4;
+            var resultVertices = new float[floatCount];
+            Marshal.Copy(pointsPtr, resultVertices, 0, floatCount);
 
-				for (int count = 0; count < pointCount; count++)
-				{
-					//convert to Unity coords system
-					verts[count].x = resultVertices[count * 4];
-					verts[count].y = resultVertices[count * 4 + 1];
-					verts[count].z = -resultVertices[count * 4 + 2];
-				}
+            var verts = new Vector3[pointCount];
 
-				return verts;
-			}
-		}
+            for (var count = 0; count < pointCount; count++)
+            {
+                //convert to Unity coords system
+                verts[count].x = resultVertices[count * 4];
+                verts[count].y = resultVertices[count * 4 + 1];
+                verts[count].z = -resultVertices[count * 4 + 2];
+            }
 
-	}
+            return verts;
+        }
+    }
 }

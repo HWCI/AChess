@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace UnityEngine.XR.iOS
+﻿namespace UnityEngine.XR.iOS
 {
     public enum ARTrackingState
     {
@@ -11,7 +9,6 @@ namespace UnityEngine.XR.iOS
         ARTrackingStateLimited,
 
         /** Tracking is Normal. */
-        ARTrackingStateNormal,
+        ARTrackingStateNormal
     }
 }
-

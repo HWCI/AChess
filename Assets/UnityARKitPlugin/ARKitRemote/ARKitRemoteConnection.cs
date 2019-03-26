@@ -1,216 +1,196 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking.PlayerConnection;
 using System.Text;
-using UnityEngine.XR.iOS.Utils; 
-
+using UnityEngine.XR.iOS.Utils;
 #if UNITY_EDITOR
- 
 using UnityEditor.Networking.PlayerConnection;
 
 namespace UnityEngine.XR.iOS
 {
-	public class ARKitRemoteConnection : MonoBehaviour
-	{
-		[Header("AR Config Options")]
-		public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
-		public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
-		public bool getPointCloud = true;
-		public bool enableLightEstimation = true;
-		public bool enableAutoFocus = true;
+    public class ARKitRemoteConnection : MonoBehaviour
+    {
+        private bool bTexturesInitialized;
 
-		[Header("Run Options")]
-		public bool resetTracking = true;
-		public bool removeExistingAnchors = true;
+        private int currentPlayerID = -1;
 
-		EditorConnection editorConnection ;
+        private EditorConnection editorConnection;
+        public bool enableAutoFocus = true;
+        public bool enableLightEstimation = true;
+        public bool getPointCloud = true;
+        private string guimessage = "none";
+        public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
+        private Texture2D remoteScreenUVTex;
 
-		int currentPlayerID = -1;
-		string guimessage = "none";
+        private Texture2D remoteScreenYTex;
+        public bool removeExistingAnchors = true;
 
-		Texture2D remoteScreenYTex;
-		Texture2D remoteScreenUVTex;
+        [Header("Run Options")] public bool resetTracking = true;
 
-		bool bTexturesInitialized;
+        [Header("AR Config Options")] public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
 
-		// Use this for initialization
-		void Start () {
-
-			bTexturesInitialized = false;
+        // Use this for initialization
+        private void Start()
+        {
+            bTexturesInitialized = false;
 
 
-			editorConnection = EditorConnection.instance;
-			editorConnection.Initialize ();
-			editorConnection.RegisterConnection (PlayerConnected);
-			editorConnection.RegisterDisconnection (PlayerDisconnected);
-			editorConnection.Register (ConnectionMessageIds.updateCameraFrameMsgId, UpdateCameraFrame);
-			editorConnection.Register (ConnectionMessageIds.addPlaneAnchorMsgeId, AddPlaneAnchor);
-			editorConnection.Register (ConnectionMessageIds.updatePlaneAnchorMsgeId, UpdatePlaneAnchor);
-			editorConnection.Register (ConnectionMessageIds.removePlaneAnchorMsgeId, RemovePlaneAnchor);
-			editorConnection.Register (ConnectionMessageIds.screenCaptureYMsgId, ReceiveRemoteScreenYTex);
-			editorConnection.Register (ConnectionMessageIds.screenCaptureUVMsgId, ReceiveRemoteScreenUVTex);
+            editorConnection = EditorConnection.instance;
+            editorConnection.Initialize();
+            editorConnection.RegisterConnection(PlayerConnected);
+            editorConnection.RegisterDisconnection(PlayerDisconnected);
+            editorConnection.Register(ConnectionMessageIds.updateCameraFrameMsgId, UpdateCameraFrame);
+            editorConnection.Register(ConnectionMessageIds.addPlaneAnchorMsgeId, AddPlaneAnchor);
+            editorConnection.Register(ConnectionMessageIds.updatePlaneAnchorMsgeId, UpdatePlaneAnchor);
+            editorConnection.Register(ConnectionMessageIds.removePlaneAnchorMsgeId, RemovePlaneAnchor);
+            editorConnection.Register(ConnectionMessageIds.screenCaptureYMsgId, ReceiveRemoteScreenYTex);
+            editorConnection.Register(ConnectionMessageIds.screenCaptureUVMsgId, ReceiveRemoteScreenUVTex);
+        }
 
-		}
+        private void PlayerConnected(int playerID)
+        {
+            currentPlayerID = playerID;
+        }
 
-		void PlayerConnected(int playerID)
-		{
-			currentPlayerID = playerID;
+        private void OnGUI()
+        {
+            if (!bTexturesInitialized)
+            {
+                if (currentPlayerID != -1)
+                {
+                    guimessage = "Connected to ARKit Remote device : " + currentPlayerID;
 
-		}
+                    if (GUI.Button(new Rect(Screen.width / 2 - 200, Screen.height / 2 - 200, 400, 100),
+                        "Start Remote ARKit Session")) SendInitToPlayer();
+                }
+                else
+                {
+                    guimessage = "Please connect to player in the console menu";
+                }
 
-		void OnGUI()
-		{
-			
-			if (!bTexturesInitialized) 
-			{
-				if (currentPlayerID != -1) {
-					guimessage = "Connected to ARKit Remote device : " + currentPlayerID.ToString ();
+                GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2 + 100, 400, 50), guimessage);
+            }
+        }
 
-					if (GUI.Button (new Rect ((Screen.width / 2) - 200, (Screen.height / 2) - 200, 400, 100), "Start Remote ARKit Session")) 
-					{
-						SendInitToPlayer ();
-					}
-				} 
-				else 
-				{
-					guimessage = "Please connect to player in the console menu";
-				}
+        private void PlayerDisconnected(int playerID)
+        {
+            if (currentPlayerID == playerID) currentPlayerID = -1;
+        }
 
-				GUI.Box (new Rect ((Screen.width / 2) - 200, (Screen.height / 2) + 100, 400, 50), guimessage);
-			}
-
-		}
-
-		void PlayerDisconnected(int playerID)
-		{
-			if (currentPlayerID == playerID) {
-				currentPlayerID = -1;
-			}
-		}
-
-		void OnDestroy()
-		{
-			#if UNITY_2017_1_OR_NEWER
-			if(editorConnection != null) {
-				editorConnection.DisconnectAll ();
-			}
-			#endif
-		}
+        private void OnDestroy()
+        {
+#if UNITY_2017_1_OR_NEWER
+            if (editorConnection != null) editorConnection.DisconnectAll();
+#endif
+        }
 
 
-		void InitializeTextures(UnityARCamera camera)
-		{
-			int yWidth = camera.videoParams.yWidth;
-			int yHeight = camera.videoParams.yHeight;
-			int uvWidth = yWidth / 2;
-			int uvHeight = yHeight / 2;
-			if (remoteScreenYTex == null || remoteScreenYTex.width != yWidth || remoteScreenYTex.height != yHeight) {
-				if (remoteScreenYTex) {
-					Destroy (remoteScreenYTex);
-				}
-				remoteScreenYTex = new Texture2D (yWidth, yHeight, TextureFormat.R8, false, true);
-			}
-			if (remoteScreenUVTex == null || remoteScreenUVTex.width != uvWidth || remoteScreenUVTex.height != uvHeight) {
-				if (remoteScreenUVTex) {
-					Destroy (remoteScreenUVTex);
-				}
-				remoteScreenUVTex = new Texture2D (uvWidth, uvHeight, TextureFormat.RG16, false, true);
-			}
+        private void InitializeTextures(UnityARCamera camera)
+        {
+            var yWidth = camera.videoParams.yWidth;
+            var yHeight = camera.videoParams.yHeight;
+            var uvWidth = yWidth / 2;
+            var uvHeight = yHeight / 2;
+            if (remoteScreenYTex == null || remoteScreenYTex.width != yWidth || remoteScreenYTex.height != yHeight)
+            {
+                if (remoteScreenYTex) Destroy(remoteScreenYTex);
+                remoteScreenYTex = new Texture2D(yWidth, yHeight, TextureFormat.R8, false, true);
+            }
 
-			bTexturesInitialized = true;
-		}
+            if (remoteScreenUVTex == null || remoteScreenUVTex.width != uvWidth || remoteScreenUVTex.height != uvHeight)
+            {
+                if (remoteScreenUVTex) Destroy(remoteScreenUVTex);
+                remoteScreenUVTex = new Texture2D(uvWidth, uvHeight, TextureFormat.RG16, false, true);
+            }
 
-		void UpdateCameraFrame(MessageEventArgs mea)
-		{
-			serializableUnityARCamera serCamera = mea.data.Deserialize<serializableUnityARCamera> ();
+            bTexturesInitialized = true;
+        }
 
-			UnityARCamera scamera = new UnityARCamera ();
-			scamera = serCamera;
+        private void UpdateCameraFrame(MessageEventArgs mea)
+        {
+            var serCamera = mea.data.Deserialize<serializableUnityARCamera>();
 
-			InitializeTextures (scamera);
+            var scamera = new UnityARCamera();
+            scamera = serCamera;
 
-			UnityARSessionNativeInterface.SetStaticCamera (scamera);
-			UnityARSessionNativeInterface.RunFrameUpdateCallbacks ();
-		}
+            InitializeTextures(scamera);
 
-		void AddPlaneAnchor(MessageEventArgs mea)
-		{
-			serializableUnityARPlaneAnchor serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor> ();
+            UnityARSessionNativeInterface.SetStaticCamera(scamera);
+            UnityARSessionNativeInterface.RunFrameUpdateCallbacks();
+        }
 
-			ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
-			UnityARSessionNativeInterface.RunAddAnchorCallbacks (arPlaneAnchor);
-		}
+        private void AddPlaneAnchor(MessageEventArgs mea)
+        {
+            var serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor>();
 
-		void UpdatePlaneAnchor(MessageEventArgs mea)
-		{
-			serializableUnityARPlaneAnchor serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor> ();
+            ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
+            UnityARSessionNativeInterface.RunAddAnchorCallbacks(arPlaneAnchor);
+        }
 
-			ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
-			UnityARSessionNativeInterface.RunUpdateAnchorCallbacks (arPlaneAnchor);
-		}
+        private void UpdatePlaneAnchor(MessageEventArgs mea)
+        {
+            var serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor>();
 
-		void RemovePlaneAnchor(MessageEventArgs mea)
-		{
-			serializableUnityARPlaneAnchor serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor> ();
+            ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
+            UnityARSessionNativeInterface.RunUpdateAnchorCallbacks(arPlaneAnchor);
+        }
 
-			ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
-			UnityARSessionNativeInterface.RunRemoveAnchorCallbacks (arPlaneAnchor);
-		}
+        private void RemovePlaneAnchor(MessageEventArgs mea)
+        {
+            var serPlaneAnchor = mea.data.Deserialize<serializableUnityARPlaneAnchor>();
 
-		void ReceiveRemoteScreenYTex(MessageEventArgs mea)
-		{
-			if (!bTexturesInitialized)
-				return;
-			remoteScreenYTex.LoadRawTextureData(CompressionHelper.ByteArrayDecompress(mea.data));
-			remoteScreenYTex.Apply ();
-			UnityARVideo arVideo = Camera.main.GetComponent<UnityARVideo>();
-			if (arVideo) {
-				arVideo.SetYTexure(remoteScreenYTex);
-			}
+            ARPlaneAnchor arPlaneAnchor = serPlaneAnchor;
+            UnityARSessionNativeInterface.RunRemoveAnchorCallbacks(arPlaneAnchor);
+        }
 
-		}
+        private void ReceiveRemoteScreenYTex(MessageEventArgs mea)
+        {
+            if (!bTexturesInitialized)
+                return;
+            remoteScreenYTex.LoadRawTextureData(CompressionHelper.ByteArrayDecompress(mea.data));
+            remoteScreenYTex.Apply();
+            var arVideo = Camera.main.GetComponent<UnityARVideo>();
+            if (arVideo) arVideo.SetYTexure(remoteScreenYTex);
+        }
 
-		void ReceiveRemoteScreenUVTex(MessageEventArgs mea)
-		{
-			if (!bTexturesInitialized)
-				return;
-			remoteScreenUVTex.LoadRawTextureData(CompressionHelper.ByteArrayDecompress(mea.data));
-			remoteScreenUVTex.Apply ();
-			UnityARVideo arVideo = Camera.main.GetComponent<UnityARVideo>();
-			if (arVideo) {
-				arVideo.SetUVTexure(remoteScreenUVTex);
-			}
-
-		}
+        private void ReceiveRemoteScreenUVTex(MessageEventArgs mea)
+        {
+            if (!bTexturesInitialized)
+                return;
+            remoteScreenUVTex.LoadRawTextureData(CompressionHelper.ByteArrayDecompress(mea.data));
+            remoteScreenUVTex.Apply();
+            var arVideo = Camera.main.GetComponent<UnityARVideo>();
+            if (arVideo) arVideo.SetUVTexure(remoteScreenUVTex);
+        }
 
 
-		void SendInitToPlayer()
-		{
-			serializableFromEditorMessage sfem = new serializableFromEditorMessage ();
-			sfem.subMessageId = SubMessageIds.editorInitARKit;
-			serializableARSessionConfiguration ssc = new serializableARSessionConfiguration (startAlignment, planeDetection, getPointCloud, enableLightEstimation, enableAutoFocus); 
-			UnityARSessionRunOption roTracking = resetTracking ? UnityARSessionRunOption.ARSessionRunOptionResetTracking : 0;
-			UnityARSessionRunOption roAnchors = removeExistingAnchors ? UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors : 0;
-			sfem.arkitConfigMsg = new serializableARKitInit (ssc, roTracking | roAnchors);
-			SendToPlayer (ConnectionMessageIds.fromEditorARKitSessionMsgId, sfem);
-		}
+        private void SendInitToPlayer()
+        {
+            var sfem = new serializableFromEditorMessage();
+            sfem.subMessageId = SubMessageIds.editorInitARKit;
+            var ssc = new serializableARSessionConfiguration(startAlignment, planeDetection, getPointCloud,
+                enableLightEstimation, enableAutoFocus);
+            var roTracking = resetTracking ? UnityARSessionRunOption.ARSessionRunOptionResetTracking : 0;
+            var roAnchors = removeExistingAnchors ? UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors : 0;
+            sfem.arkitConfigMsg = new serializableARKitInit(ssc, roTracking | roAnchors);
+            SendToPlayer(ConnectionMessageIds.fromEditorARKitSessionMsgId, sfem);
+        }
 
-		void SendToPlayer(System.Guid msgId, byte[] data)
-		{
-			editorConnection.Send (msgId, data);
-		}
+        private void SendToPlayer(System.Guid msgId, byte[] data)
+        {
+            editorConnection.Send(msgId, data);
+        }
 
-		public void SendToPlayer(System.Guid msgId, object serializableObject)
-		{
-			byte[] arrayToSend = serializableObject.SerializeToByteArray ();
-			SendToPlayer (msgId, arrayToSend);
-		}
+        public void SendToPlayer(System.Guid msgId, object serializableObject)
+        {
+            var arrayToSend = serializableObject.SerializeToByteArray();
+            SendToPlayer(msgId, arrayToSend);
+        }
 
 
-		// Update is called once per frame
-		void Update () {
-			
-		}
-
-	}
+        // Update is called once per frame
+        private void Update()
+        {
+        }
+    }
 }
 #endif

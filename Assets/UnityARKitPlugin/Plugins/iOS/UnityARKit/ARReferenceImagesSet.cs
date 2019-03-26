@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "ARReferenceImagesSet" , menuName = "UnityARKitPlugin/ARReferenceImagesSet", order = 3)]
-public class ARReferenceImagesSet : ScriptableObject {
+[CreateAssetMenu(fileName = "ARReferenceImagesSet", menuName = "UnityARKitPlugin/ARReferenceImagesSet", order = 3)]
+public class ARReferenceImagesSet : ScriptableObject
+{
+    public ARReferenceImage[] referenceImages;
 
-	public string resourceGroupName;
-	public ARReferenceImage [] referenceImages;
-
+    public string resourceGroupName;
 }

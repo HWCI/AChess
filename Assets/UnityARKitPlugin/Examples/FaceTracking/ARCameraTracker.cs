@@ -1,38 +1,39 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class ARCameraTracker : MonoBehaviour {
+public class ARCameraTracker : MonoBehaviour
+{
+    private bool sessionStarted;
 
-	[SerializeField]
-	private Camera trackedCamera;
+    [SerializeField] private Camera trackedCamera;
 
-	private bool sessionStarted = false;
+    // Use this for initialization
+    private void Start()
+    {
+        UnityARSessionNativeInterface.ARFrameUpdatedEvent += FirstFrameUpdate;
+    }
 
-	// Use this for initialization
-	void Start () {
-		UnityARSessionNativeInterface.ARFrameUpdatedEvent += FirstFrameUpdate;
-	}
+    private void OnDestroy()
+    {
+    }
 
-	void OnDestroy()
-	{
-	}
+    private void FirstFrameUpdate(UnityARCamera cam)
+    {
+        sessionStarted = true;
+        UnityARSessionNativeInterface.ARFrameUpdatedEvent -= FirstFrameUpdate;
+    }
 
-	void FirstFrameUpdate(UnityARCamera cam)
-	{
-		sessionStarted = true;
-		UnityARSessionNativeInterface.ARFrameUpdatedEvent -= FirstFrameUpdate;
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+        if (trackedCamera != null && sessionStarted)
+        {
+            var cameraPose = UnityARSessionNativeInterface.GetARSessionNativeInterface().GetCameraPose();
+            trackedCamera.transform.localPosition = UnityARMatrixOps.GetPosition(cameraPose);
+            trackedCamera.transform.localRotation = UnityARMatrixOps.GetRotation(cameraPose);
 
-	// Update is called once per frame
-	void Update () {
-		if (trackedCamera != null && sessionStarted) {
-			Matrix4x4 cameraPose = UnityARSessionNativeInterface.GetARSessionNativeInterface ().GetCameraPose ();
-			trackedCamera.transform.localPosition = UnityARMatrixOps.GetPosition (cameraPose);
-			trackedCamera.transform.localRotation = UnityARMatrixOps.GetRotation (cameraPose);
-
-			trackedCamera.projectionMatrix = UnityARSessionNativeInterface.GetARSessionNativeInterface ().GetCameraProjection ();
-		}
-	}
+            trackedCamera.projectionMatrix =
+                UnityARSessionNativeInterface.GetARSessionNativeInterface().GetCameraProjection();
+        }
+    }
 }

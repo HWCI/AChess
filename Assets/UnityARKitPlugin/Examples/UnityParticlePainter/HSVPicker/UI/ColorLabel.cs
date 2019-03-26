@@ -1,26 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 [RequireComponent(typeof(Text))]
 public class ColorLabel : MonoBehaviour
 {
+    private Text label;
+    public float maxValue = 255;
+    public float minValue;
     public ColorPicker picker;
 
-    public ColorValues type;
+    public int precision;
 
     public string prefix = "R: ";
-    public float minValue = 0;
-    public float maxValue = 255;
 
-    public int precision = 0;
-
-    private Text label;
+    public ColorValues type;
 
     private void Awake()
     {
         label = GetComponent<Text>();
-
     }
 
     private void OnEnable()
@@ -67,7 +64,7 @@ public class ColorLabel : MonoBehaviour
         }
         else
         {
-            float value = minValue + (picker.GetValue(type) * (maxValue - minValue));
+            var value = minValue + picker.GetValue(type) * (maxValue - minValue);
 
             label.text = prefix + ConvertToDisplayString(value);
         }
@@ -77,7 +74,6 @@ public class ColorLabel : MonoBehaviour
     {
         if (precision > 0)
             return value.ToString("f " + precision);
-        else
-            return Mathf.FloorToInt(value).ToString();
+        return Mathf.FloorToInt(value).ToString();
     }
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\HOWAR\.Rider2018.2\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\HOWAR\.Rider2018.2\system\resharper-host\Local\Transient\ReSharperHost\v182\SolutionCaches\_FYP.-744471522.00" t="ExcludeRecursive" />
-    <e p="D:\GDD\FYP\FYP" t="IncludeRecursive">
+    <e p="C:\Users\Staff\.Rider2018.3\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\Staff\.Rider2018.3\system\resharper-host\local\Transient\ReSharperHost\v183\SolutionCaches\_FYP.2090863090.00" t="ExcludeRecursive" />
+    <e p="C:\Users\Staff\AppData\local\Android\Sdk\platforms\android-28\data\res" t="IncludeRecursive" />
+    <e p="C:\Users\Staff\Documents\GitHub\FYP" t="IncludeRecursive">
       <e p="Assembly-CSharp-Editor.csproj" t="IncludeRecursive" />
       <e p="Assembly-CSharp.csproj" t="IncludeRecursive" />
       <e p="Assets" t="Include">
@@ -12,11 +13,12 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 =======
->>>>>>> parent of 84aa50a... un merge
+>>>>>>> 464d89c683eba5cf18714a457f4aca848ace1405
         <e p="CharacterScript.cs" t="Include" />
         <e p="GameManager.cs" t="Include" />
         <e p="GridScript.cs" t="Include" />
         <e p="InteractionScript.cs" t="Include" />
+        <e p="JumpableObstacle.cs" t="Include" />
         <e p="MovementController.cs" t="Include" />
 <<<<<<< HEAD
         <e p="PostProcessing" t="Include">
@@ -454,11 +456,12 @@
 =======
 >>>>>>> parent of 3dd12b6... Backup
 =======
->>>>>>> parent of 3dd12b6... Backup
-=======
 >>>>>>> parent of 26a45aa... Merge
 =======
 >>>>>>> parent of 84aa50a... un merge
+=======
+        <e p="SetScene.cs" t="Include" />
+>>>>>>> 464d89c683eba5cf18714a457f4aca848ace1405
         <e p="Store Assets" t="Include">
           <e p="MicroSplat" t="Include">
             <e p="Core" t="Include">
@@ -596,6 +599,7 @@
             </e>
           </e>
         </e>
+        <e p="UIManager.cs" t="Include" />
         <e p="UnityARKitPlugin" t="Include">
           <e p="ARKitRemote" t="Include">
             <e p="ARKitFaceTrackingRemoteConnection.cs" t="Include" />

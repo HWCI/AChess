@@ -1,70 +1,71 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
 public class CharacterScript : MonoBehaviour, IPointerClickHandler
 {
+    private Animator _anim;
 
-	private Transform _transform;
-	private Animator _anim;
-	private NavMeshAgent navAgent;
-	// Use this for initialization
-	void Start ()
-	{
-		this.navAgent = this.gameObject.GetComponent<NavMeshAgent>();
-		_transform = this.gameObject.GetComponent<Transform>();
-		_anim = this.gameObject.GetComponent<Animator>();
-	}
-	
-	// Update is called once per frame
-	void Update ()
-	{
-		_anim.SetFloat("Speed", navAgent.velocity.magnitude);
-		if (_anim.GetFloat("Speed") <= 0.1)
-		{
-			_anim.SetBool("Rest", true);
-		}
-		else
-		{
-			_anim.SetBool("Rest", false);
-		}
-	}
+    private Transform _transform;
+    private NavMeshAgent navAgent;
 
-	public void Move(Transform target)
-	{
-		navAgent.Move(target.position);
-	}
+    public void OnPointerClick(PointerEventData pED)
+    {
+        MovementController.instance.SetChara(this);
+        Debug.Log("Clicked");
+    }
 
-	public void Skill1()
-	{
-		
-	}
+    // Use this for initialization
+    private void Start()
+    {
+        navAgent = gameObject.GetComponent<NavMeshAgent>();
+        _transform = gameObject.GetComponent<Transform>();
+        _anim = gameObject.GetComponent<Animator>();
+    }
 
-	public void Skill2()
-	{
-		
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+        _anim.SetFloat("Speed", navAgent.velocity.magnitude);
+        if (navAgent.velocity.y > 0.11)
+        {
+            _anim.SetBool("Jump", true);
+        }
+        else
+        {
+            _anim.SetBool("Jump", false);
+        }
+        if (_anim.GetFloat("Speed") <= 0.1)
+            _anim.SetBool("Rest", true);
+        else
+            _anim.SetBool("Rest", false);
+    }
 
-	public void Skill3()
-	{
-		
-	}
+    public void Move(Transform target)
+    {
+        navAgent.Move(target.position);
+    }
 
-	public void SetChara()
-	{
-		MovementController.instance.SetChara(this);
-		Debug.Log("Clicked");
-	}
-	public void OnPointerClick(PointerEventData pED)
-	{
-		MovementController.instance.SetChara(this);
-		Debug.Log("Clicked");
-	}
+    public void Skill1()
+    {
+    }
 
-	public void Move(Vector3 location)
-	{
-		navAgent.destination = location;
-	}
+    public void Skill2()
+    {
+    }
+
+    public void Skill3()
+    {
+    }
+
+    public void SetChara()
+    {
+        MovementController.instance.SetChara(this);
+        Debug.Log("Clicked");
+    }
+
+    public void Move(Vector3 location)
+    {
+        navAgent.destination = location;
+    }
 }

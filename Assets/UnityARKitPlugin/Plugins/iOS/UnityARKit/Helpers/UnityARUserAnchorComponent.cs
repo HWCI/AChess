@@ -1,50 +1,44 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.XR.iOS;
 
 namespace UnityEngine.XR.iOS
 {
-public class UnityARUserAnchorComponent : MonoBehaviour {
+    public class UnityARUserAnchorComponent : MonoBehaviour
+    {
+        public string AnchorId { get; private set; }
 
-    private string m_AnchorId;
+        private void Awake()
+        {
+            UnityARSessionNativeInterface.ARUserAnchorUpdatedEvent += GameObjectAnchorUpdated;
+            UnityARSessionNativeInterface.ARUserAnchorRemovedEvent += AnchorRemoved;
+            AnchorId = UnityARSessionNativeInterface.GetARSessionNativeInterface()
+                .AddUserAnchorFromGameObject(gameObject).identifierStr;
+        }
 
-	public string AnchorId  { get { return m_AnchorId; } }
+        private void Start()
+        {
+        }
 
-	void Awake()
-	{
-		UnityARSessionNativeInterface.ARUserAnchorUpdatedEvent += GameObjectAnchorUpdated;
-		UnityARSessionNativeInterface.ARUserAnchorRemovedEvent += AnchorRemoved;
-		this.m_AnchorId = UnityARSessionNativeInterface.GetARSessionNativeInterface ().AddUserAnchorFromGameObject(this.gameObject).identifierStr; 
-	}
-	void Start () {
+        public void AnchorRemoved(ARUserAnchor anchor)
+        {
+            if (anchor.identifier.Equals(AnchorId)) Destroy(gameObject);
+        }
 
-	}
+        private void OnDestroy()
+        {
+            UnityARSessionNativeInterface.ARUserAnchorUpdatedEvent -= GameObjectAnchorUpdated;
+            UnityARSessionNativeInterface.ARUserAnchorRemovedEvent -= AnchorRemoved;
+            UnityARSessionNativeInterface.GetARSessionNativeInterface().RemoveUserAnchor(AnchorId);
+        }
 
-	public void AnchorRemoved(ARUserAnchor anchor)
-	{
-		if (anchor.identifier.Equals(m_AnchorId))
-		{
-			Destroy(this.gameObject);
-		}
-	}
+        private void GameObjectAnchorUpdated(ARUserAnchor anchor)
+        {
+            if (anchor.identifier.Equals(AnchorId))
+            {
+                transform.position = UnityARMatrixOps.GetPosition(anchor.transform);
+                transform.rotation = UnityARMatrixOps.GetRotation(anchor.transform);
 
-    void OnDestroy() {
-		UnityARSessionNativeInterface.ARUserAnchorUpdatedEvent -= GameObjectAnchorUpdated;
-		UnityARSessionNativeInterface.ARUserAnchorRemovedEvent -= AnchorRemoved;
-		UnityARSessionNativeInterface.GetARSessionNativeInterface ().RemoveUserAnchor(this.m_AnchorId); 
+                Console.WriteLine("Updated: pos = " + transform.position + AnchorId);
+            }
+        }
     }
-
-	private void GameObjectAnchorUpdated(ARUserAnchor anchor)
-	{
-		if (anchor.identifier.Equals(m_AnchorId))
-		{
-			transform.position = UnityARMatrixOps.GetPosition(anchor.transform);
-			transform.rotation = UnityARMatrixOps.GetRotation(anchor.transform);
-			
-			Console.WriteLine("Updated: pos = " + transform.position + m_AnchorId);
-		}
-	}
-}
 }

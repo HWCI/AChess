@@ -1,57 +1,54 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
+public class VideoFormatsExample : MonoBehaviour
+{
+    public Transform formatsParent;
+    public GameObject videoFormatButtonPrefab;
 
+    // Use this for initialization
+    private void Start()
+    {
+        VideoFormatButton.FormatButtonPressedEvent += ExampletButtonPressed;
+        PopulateVideoFormatButtons();
+    }
 
-public class VideoFormatsExample : MonoBehaviour {
+    private void OnDestroy()
+    {
+        VideoFormatButton.FormatButtonPressedEvent -= ExampletButtonPressed;
+    }
 
-	public Transform formatsParent;
-	public GameObject videoFormatButtonPrefab;
+    private void PopulateVideoFormatButtons()
+    {
+        foreach (var vf in UnityARVideoFormat.SupportedVideoFormats())
+        {
+            var go = Instantiate(videoFormatButtonPrefab, formatsParent);
+            var vfb = go.GetComponent<VideoFormatButton>();
+            if (vfb != null) vfb.Populate(vf);
+        }
+    }
 
-	// Use this for initialization
-	void Start () {
-		VideoFormatButton.FormatButtonPressedEvent += ExampletButtonPressed;
-		PopulateVideoFormatButtons ();
-	}
-	
-	void OnDestroy () {
-		VideoFormatButton.FormatButtonPressedEvent -= ExampletButtonPressed;
-	}
+    public void ExampletButtonPressed(UnityARVideoFormat videoFormat)
+    {
+        //Restart session with new video format in config
 
-	void PopulateVideoFormatButtons()
-	{
-		foreach (UnityARVideoFormat vf in UnityARVideoFormat.SupportedVideoFormats()) 
-		{
-			GameObject go = Instantiate<GameObject> (videoFormatButtonPrefab, formatsParent);
-			VideoFormatButton vfb = go.GetComponent<VideoFormatButton> ();
-			if (vfb != null) {
-				vfb.Populate (vf);
-			}
-		}
-	}
+        var session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
 
-	public void ExampletButtonPressed(UnityARVideoFormat videoFormat)
-	{
-		//Restart session with new video format in config
+        var config = new ARKitWorldTrackingSessionConfiguration();
 
-		UnityARSessionNativeInterface session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
+        if (config.IsSupported)
+        {
+            config.planeDetection = UnityARPlaneDetection.HorizontalAndVertical;
+            config.alignment = UnityARAlignment.UnityARAlignmentGravity;
+            config.getPointCloudData = true;
+            config.enableLightEstimation = true;
+            config.enableAutoFocus = true;
+            config.videoFormat = videoFormat.videoFormatPtr;
+            Application.targetFrameRate = videoFormat.framesPerSecond;
 
-		ARKitWorldTrackingSessionConfiguration config = new ARKitWorldTrackingSessionConfiguration();
-
-		if (config.IsSupported) {
-			config.planeDetection = UnityARPlaneDetection.HorizontalAndVertical;
-			config.alignment = UnityARAlignment.UnityARAlignmentGravity;
-			config.getPointCloudData = true;
-			config.enableLightEstimation = true;
-			config.enableAutoFocus = true;
-			config.videoFormat = videoFormat.videoFormatPtr;
-			Application.targetFrameRate = videoFormat.framesPerSecond;
-
-			UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
-			session.RunWithConfigAndOptions (config, runOption);
-		}
-				
-	}
+            var runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors |
+                            UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+            session.RunWithConfigAndOptions(config, runOption);
+        }
+    }
 }

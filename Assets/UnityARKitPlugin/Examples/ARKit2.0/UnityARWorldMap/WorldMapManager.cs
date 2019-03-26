@@ -1,27 +1,34 @@
 ﻿using System.IO;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.iOS;
 
 public class WorldMapManager : MonoBehaviour
 {
-    [SerializeField]
-    UnityARCameraManager m_ARCameraManager;
+    [SerializeField] private UnityARCameraManager m_ARCameraManager;
 
-    ARWorldMap m_LoadedMap;
+    private ARTrackingStateReason m_LastReason;
 
-	serializableARWorldMap serializedWorldMap;
+    private ARWorldMap m_LoadedMap;
+
+    private serializableARWorldMap serializedWorldMap;
+
+    private static UnityARSessionNativeInterface session
+    {
+        get { return UnityARSessionNativeInterface.GetARSessionNativeInterface(); }
+    }
+
+    private static string path
+    {
+        get { return Path.Combine(Application.persistentDataPath, "myFirstWorldMap.worldmap"); }
+    }
 
     // Use this for initialization
-    void Start ()
+    private void Start()
     {
         UnityARSessionNativeInterface.ARFrameUpdatedEvent += OnFrameUpdate;
     }
 
-    ARTrackingStateReason m_LastReason;
-
-    void OnFrameUpdate(UnityARCamera arCamera)
+    private void OnFrameUpdate(UnityARCamera arCamera)
     {
         if (arCamera.trackingReason != m_LastReason)
         {
@@ -32,17 +39,7 @@ public class WorldMapManager : MonoBehaviour
         }
     }
 
-    static UnityARSessionNativeInterface session
-    {
-        get { return UnityARSessionNativeInterface.GetARSessionNativeInterface(); }
-    }
-
-    static string path
-    {
-        get { return Path.Combine(Application.persistentDataPath, "myFirstWorldMap.worldmap"); }
-    }
-
-    void OnWorldMap(ARWorldMap worldMap)
+    private void OnWorldMap(ARWorldMap worldMap)
     {
         if (worldMap != null)
         {
@@ -69,50 +66,50 @@ public class WorldMapManager : MonoBehaviour
 
             var config = m_ARCameraManager.sessionConfiguration;
             config.worldMap = worldMap;
-			UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+            var runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors |
+                            UnityARSessionRunOption.ARSessionRunOptionResetTracking;
 
-			Debug.Log("Restarting session with worldMap");
-			session.RunWithConfigAndOptions(config, runOption);
-
+            Debug.Log("Restarting session with worldMap");
+            session.RunWithConfigAndOptions(config, runOption);
         }
     }
 
 
-	void OnWorldMapSerialized(ARWorldMap worldMap)
-	{
-		if (worldMap != null)
-		{
-			//we have an operator that converts a ARWorldMap to a serializableARWorldMap
-			serializedWorldMap = worldMap;
-			Debug.Log ("ARWorldMap serialized to serializableARWorldMap");
-		}
-	}
+    private void OnWorldMapSerialized(ARWorldMap worldMap)
+    {
+        if (worldMap != null)
+        {
+            //we have an operator that converts a ARWorldMap to a serializableARWorldMap
+            serializedWorldMap = worldMap;
+            Debug.Log("ARWorldMap serialized to serializableARWorldMap");
+        }
+    }
 
 
-	public void SaveSerialized()
-	{
-		session.GetCurrentWorldMapAsync(OnWorldMapSerialized);
-	}
+    public void SaveSerialized()
+    {
+        session.GetCurrentWorldMapAsync(OnWorldMapSerialized);
+    }
 
-	public void LoadSerialized()
-	{
-		Debug.Log("Loading ARWorldMap from serialized data");
-		//we have an operator that converts a serializableARWorldMap to a ARWorldMap
-		ARWorldMap worldMap = serializedWorldMap;
-		if (worldMap != null)
-		{
-			m_LoadedMap = worldMap;
-			Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
+    public void LoadSerialized()
+    {
+        Debug.Log("Loading ARWorldMap from serialized data");
+        //we have an operator that converts a serializableARWorldMap to a ARWorldMap
+        ARWorldMap worldMap = serializedWorldMap;
+        if (worldMap != null)
+        {
+            m_LoadedMap = worldMap;
+            Debug.LogFormat("Map loaded. Center: {0} Extent: {1}", worldMap.center, worldMap.extent);
 
-			UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
+            UnityARSessionNativeInterface.ARSessionShouldAttemptRelocalization = true;
 
-			var config = m_ARCameraManager.sessionConfiguration;
-			config.worldMap = worldMap;
-			UnityARSessionRunOption runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors | UnityARSessionRunOption.ARSessionRunOptionResetTracking;
+            var config = m_ARCameraManager.sessionConfiguration;
+            config.worldMap = worldMap;
+            var runOption = UnityARSessionRunOption.ARSessionRunOptionRemoveExistingAnchors |
+                            UnityARSessionRunOption.ARSessionRunOptionResetTracking;
 
-			Debug.Log("Restarting session with worldMap");
-			session.RunWithConfigAndOptions(config, runOption);
-		}
-
-	}
+            Debug.Log("Restarting session with worldMap");
+            session.RunWithConfigAndOptions(config, runOption);
+        }
+    }
 }

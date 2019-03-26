@@ -1,56 +1,48 @@
-﻿using UnityEngine;
+﻿using System;
 using UnityEngine.Networking.PlayerConnection;
-using System.Text;
 using UnityEngine.XR.iOS.Utils;
 
 namespace UnityEngine.XR.iOS
 {
-	
-	public class ConnectToEditor : MonoBehaviour
-	{
-		PlayerConnection playerConnection;
-		UnityARSessionNativeInterface m_session;
-		int editorID;
+    public class ConnectToEditor : MonoBehaviour
+    {
+        private int editorID;
 
-		Texture2D frameBufferTex;
+        private Texture2D frameBufferTex;
+        private UnityARSessionNativeInterface m_session;
+        private PlayerConnection playerConnection;
 
-		// Use this for initialization
-		void Start()
-		{
-			Debug.Log("STARTING ConnectToEditor");
-			editorID = -1;
-			playerConnection = PlayerConnection.instance;
-			playerConnection.RegisterConnection(EditorConnected);
-			playerConnection.RegisterDisconnection(EditorDisconnected);
-			playerConnection.Register(ConnectionMessageIds.fromEditorARKitSessionMsgId, HandleEditorMessage);
-			m_session = null;
+        // Use this for initialization
+        private void Start()
+        {
+            Debug.Log("STARTING ConnectToEditor");
+            editorID = -1;
+            playerConnection = PlayerConnection.instance;
+            playerConnection.RegisterConnection(EditorConnected);
+            playerConnection.RegisterDisconnection(EditorDisconnected);
+            playerConnection.Register(ConnectionMessageIds.fromEditorARKitSessionMsgId, HandleEditorMessage);
+            m_session = null;
+        }
 
-		}
+        private void OnGUI()
+        {
+            if (m_session == null)
+                GUI.Box(new Rect(Screen.width / 2 - 200, Screen.height / 2, 400, 50),
+                    "Waiting for editor connection...");
+        }
 
-		void OnGUI()
-		{
-			if (m_session == null) {	
-				GUI.Box (new Rect ((Screen.width / 2) - 200, (Screen.height / 2), 400, 50), "Waiting for editor connection...");
-			}
-		}
+        private void HandleEditorMessage(MessageEventArgs mea)
+        {
+            var sfem = mea.data.Deserialize<serializableFromEditorMessage>();
+            if (sfem != null && sfem.subMessageId == SubMessageIds.editorInitARKit)
+                InitializeARKit(sfem.arkitConfigMsg);
+            else if (sfem != null && sfem.subMessageId == SubMessageIds.editorInitARKitFaceTracking)
+                InitializeARKitFaceTracking(sfem.arkitConfigMsg);
+        }
 
-		void HandleEditorMessage(MessageEventArgs mea)
-		{
-			serializableFromEditorMessage sfem = mea.data.Deserialize<serializableFromEditorMessage>();
-			if (sfem != null && sfem.subMessageId == SubMessageIds.editorInitARKit) 
-			{
-				InitializeARKit ( sfem.arkitConfigMsg );
-			} 
-			else if (sfem != null && sfem.subMessageId == SubMessageIds.editorInitARKitFaceTracking) 
-			{
-				InitializeARKitFaceTracking( sfem.arkitConfigMsg);
-			}
-		}
-
-		void InitializeARKit(serializableARKitInit sai)
-		{
-			#if !UNITY_EDITOR
-
+        private void InitializeARKit(serializableARKitInit sai)
+        {
+#if !UNITY_EDITOR
 			//get the config and runoption from editor and use them to initialize arkit on device
 			Application.targetFrameRate = 60;
 			m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
@@ -63,13 +55,12 @@ namespace UnityEngine.XR.iOS
 			UnityARSessionNativeInterface.ARAnchorUpdatedEvent += ARAnchorUpdated;
 			UnityARSessionNativeInterface.ARAnchorRemovedEvent += ARAnchorRemoved;
 
-			#endif
-		}
+#endif
+        }
 
-		void InitializeARKitFaceTracking(serializableARKitInit sai)
-		{
-			#if !UNITY_EDITOR
-
+        private void InitializeARKitFaceTracking(serializableARKitInit sai)
+        {
+#if !UNITY_EDITOR
 			//get the config and runoption from editor and use them to initialize arkit for facetracking on device
 			Application.targetFrameRate = 60;
 			m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
@@ -82,114 +73,101 @@ namespace UnityEngine.XR.iOS
 			UnityARSessionNativeInterface.ARFaceAnchorUpdatedEvent += ARFaceAnchorUpdated;
 			UnityARSessionNativeInterface.ARFaceAnchorRemovedEvent += ARFaceAnchorRemoved;
 
-			#endif
-		}
+#endif
+        }
 
-		public void ARFrameUpdated(UnityARCamera camera)
-		{
-			serializableUnityARCamera serARCamera = camera;
-			SendToEditor(ConnectionMessageIds.updateCameraFrameMsgId, serARCamera);
+        public void ARFrameUpdated(UnityARCamera camera)
+        {
+            serializableUnityARCamera serARCamera = camera;
+            SendToEditor(ConnectionMessageIds.updateCameraFrameMsgId, serARCamera);
+        }
 
-		}
-
-		public void ARAnchorAdded(ARPlaneAnchor planeAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARAnchorAdded(ARPlaneAnchor planeAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARPlaneAnchor serPlaneAnchor = planeAnchor;
 			SendToEditor (ConnectionMessageIds.addPlaneAnchorMsgeId, serPlaneAnchor);
-			#endif
-		}
+#endif
+        }
 
-		public void ARAnchorUpdated(ARPlaneAnchor planeAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARAnchorUpdated(ARPlaneAnchor planeAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARPlaneAnchor serPlaneAnchor = planeAnchor;
 			SendToEditor (ConnectionMessageIds.updatePlaneAnchorMsgeId, serPlaneAnchor);
-			#endif
-		}
+#endif
+        }
 
-		public void ARAnchorRemoved(ARPlaneAnchor planeAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARAnchorRemoved(ARPlaneAnchor planeAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARPlaneAnchor serPlaneAnchor = planeAnchor;
 			SendToEditor (ConnectionMessageIds.removePlaneAnchorMsgeId, serPlaneAnchor);
-			#endif
-		}
+#endif
+        }
 
-		public void ARFaceAnchorAdded(ARFaceAnchor faceAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARFaceAnchorAdded(ARFaceAnchor faceAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARFaceAnchor serFaceAnchor = faceAnchor;
 			SendToEditor (ConnectionMessageIds.addFaceAnchorMsgeId, serFaceAnchor);
-			#endif
-		}
+#endif
+        }
 
-		public void ARFaceAnchorUpdated(ARFaceAnchor faceAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARFaceAnchorUpdated(ARFaceAnchor faceAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARFaceAnchor serFaceAnchor = faceAnchor;
 			SendToEditor (ConnectionMessageIds.updateFaceAnchorMsgeId, serFaceAnchor);
-			#endif
-		}
+#endif
+        }
 
-		public void ARFaceAnchorRemoved(ARFaceAnchor faceAnchor)
-		{
-			#if !UNITY_EDITOR
+        public void ARFaceAnchorRemoved(ARFaceAnchor faceAnchor)
+        {
+#if !UNITY_EDITOR
 			serializableUnityARFaceAnchor serFaceAnchor = faceAnchor;
 			SendToEditor (ConnectionMessageIds.removeFaceAnchorMsgeId, serFaceAnchor);
-			#endif
-		}
+#endif
+        }
 
-		void EditorConnected(int playerID)
-		{
-			Debug.Log("connected");
+        private void EditorConnected(int playerID)
+        {
+            Debug.Log("connected");
 
-			editorID = playerID;
+            editorID = playerID;
+        }
 
-		}
+        private void EditorDisconnected(int playerID)
+        {
+            if (editorID == playerID) editorID = -1;
 
-		void EditorDisconnected(int playerID)
-		{
-			if (editorID == playerID)
-			{
-				editorID = -1;
-			}
-
-			DisconnectFromEditor ();
-			#if !UNITY_EDITOR
+            DisconnectFromEditor();
+#if !UNITY_EDITOR
 			if (m_session != null)
 			{
 				m_session.Pause();
 				m_session = null;
 			}
-			#endif
-		}
+#endif
+        }
 
 
-		public void SendToEditor(System.Guid msgId, object serializableObject)
-		{
-			byte[] arrayToSend = serializableObject.SerializeToByteArray ();
-			SendToEditor (msgId, arrayToSend);
-		}
+        public void SendToEditor(Guid msgId, object serializableObject)
+        {
+            var arrayToSend = serializableObject.SerializeToByteArray();
+            SendToEditor(msgId, arrayToSend);
+        }
 
-		public void SendToEditor(System.Guid msgId, byte[] data)
-		{
-			if (playerConnection.isConnected)
-			{
-				playerConnection.Send(msgId, data);
-			}
+        public void SendToEditor(Guid msgId, byte[] data)
+        {
+            if (playerConnection.isConnected) playerConnection.Send(msgId, data);
+        }
 
-
-		}
-
-		public void DisconnectFromEditor()
-		{
-			#if UNITY_2017_1_OR_NEWER		
-			playerConnection.DisconnectAll();
-			#endif
-		}
-
-
-	}
-
+        public void DisconnectFromEditor()
+        {
+#if UNITY_2017_1_OR_NEWER
+            playerConnection.DisconnectAll();
+#endif
+        }
+    }
 }

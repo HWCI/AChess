@@ -1,76 +1,70 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class UnityEyeManager : MonoBehaviour 
+public class UnityEyeManager : MonoBehaviour
 {
-	[SerializeField]
-	private GameObject eyePrefab;
+    [SerializeField] private GameObject eyePrefab;
 
-	private UnityARSessionNativeInterface m_session;
-	private GameObject leftEyeGo;
-	private GameObject rightEyeGo;
+    private GameObject leftEyeGo;
 
-	// Use this for initialization
-	void Start () {
-		m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
+    private UnityARSessionNativeInterface m_session;
+    private GameObject rightEyeGo;
 
-		Application.targetFrameRate = 60;
-		ARKitFaceTrackingConfiguration config = new ARKitFaceTrackingConfiguration();
-		config.alignment = UnityARAlignment.UnityARAlignmentGravity;
-		config.enableLightEstimation = true;
+    // Use this for initialization
+    private void Start()
+    {
+        m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
 
-		if (config.IsSupported )
-		{
+        Application.targetFrameRate = 60;
+        var config = new ARKitFaceTrackingConfiguration();
+        config.alignment = UnityARAlignment.UnityARAlignmentGravity;
+        config.enableLightEstimation = true;
 
-			m_session.RunWithConfig (config);
+        if (config.IsSupported)
+        {
+            m_session.RunWithConfig(config);
 
-			UnityARSessionNativeInterface.ARFaceAnchorAddedEvent += FaceAdded;
-			UnityARSessionNativeInterface.ARFaceAnchorUpdatedEvent += FaceUpdated;
-			UnityARSessionNativeInterface.ARFaceAnchorRemovedEvent += FaceRemoved;
+            UnityARSessionNativeInterface.ARFaceAnchorAddedEvent += FaceAdded;
+            UnityARSessionNativeInterface.ARFaceAnchorUpdatedEvent += FaceUpdated;
+            UnityARSessionNativeInterface.ARFaceAnchorRemovedEvent += FaceRemoved;
+        }
 
-		}
+        leftEyeGo = Instantiate(eyePrefab);
+        rightEyeGo = Instantiate(eyePrefab);
 
-		leftEyeGo = GameObject.Instantiate (eyePrefab);
-		rightEyeGo = GameObject.Instantiate (eyePrefab);
+        leftEyeGo.SetActive(false);
+        rightEyeGo.SetActive(false);
+    }
 
-		leftEyeGo.SetActive (false);
-		rightEyeGo.SetActive (false);
+    private void FaceAdded(ARFaceAnchor anchorData)
+    {
+        leftEyeGo.transform.position = anchorData.leftEyePose.position;
+        leftEyeGo.transform.rotation = anchorData.leftEyePose.rotation;
 
-	}
+        rightEyeGo.transform.position = anchorData.rightEyePose.position;
+        rightEyeGo.transform.rotation = anchorData.rightEyePose.rotation;
 
-	void FaceAdded (ARFaceAnchor anchorData)
-	{
-		leftEyeGo.transform.position = anchorData.leftEyePose.position;
-		leftEyeGo.transform.rotation = anchorData.leftEyePose.rotation;
+        leftEyeGo.SetActive(true);
+        rightEyeGo.SetActive(true);
+    }
 
-		rightEyeGo.transform.position = anchorData.rightEyePose.position;
-		rightEyeGo.transform.rotation = anchorData.rightEyePose.rotation;
+    private void FaceUpdated(ARFaceAnchor anchorData)
+    {
+        leftEyeGo.transform.position = anchorData.leftEyePose.position;
+        leftEyeGo.transform.rotation = anchorData.leftEyePose.rotation;
 
-		leftEyeGo.SetActive (true);
-		rightEyeGo.SetActive (true);
-	}
+        rightEyeGo.transform.position = anchorData.rightEyePose.position;
+        rightEyeGo.transform.rotation = anchorData.rightEyePose.rotation;
+    }
 
-	void FaceUpdated (ARFaceAnchor anchorData)
-	{
-		leftEyeGo.transform.position = anchorData.leftEyePose.position;
-		leftEyeGo.transform.rotation = anchorData.leftEyePose.rotation;
+    private void FaceRemoved(ARFaceAnchor anchorData)
+    {
+        leftEyeGo.SetActive(false);
+        rightEyeGo.SetActive(false);
+    }
 
-		rightEyeGo.transform.position = anchorData.rightEyePose.position;
-		rightEyeGo.transform.rotation = anchorData.rightEyePose.rotation;
-
-	}
-
-	void FaceRemoved (ARFaceAnchor anchorData)
-	{
-		leftEyeGo.SetActive (false);
-		rightEyeGo.SetActive (false);
-
-	}
-
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+    }
 }

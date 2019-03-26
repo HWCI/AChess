@@ -1,86 +1,76 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Collections.Hybrid.Generic;
 using UnityEngine;
-using Collections.Hybrid.Generic;
 using UnityEngine.XR.iOS;
 
-public class DetectedObjectManager : MonoBehaviour {
+public class DetectedObjectManager : MonoBehaviour
+{
+    public GameObject m_ObjectPrefab;
 
-	public GameObject m_ObjectPrefab;
+    private LinkedListDictionary<string, GameObject> objectAnchorMap;
 
-	private LinkedListDictionary<string, GameObject> objectAnchorMap;
+    // Use this for initialization
+    private void Start()
+    {
+        objectAnchorMap = new LinkedListDictionary<string, GameObject>();
+        UnityARSessionNativeInterface.ARObjectAnchorAddedEvent += ObjectAnchorAdded;
+        UnityARSessionNativeInterface.ARObjectAnchorRemovedEvent += ObjectAnchorRemoved;
+        UnityARSessionNativeInterface.ARObjectAnchorUpdatedEvent += ObjectAnchorUpdated;
+    }
 
-	// Use this for initialization
-	void Start () {
-		objectAnchorMap = new LinkedListDictionary<string, GameObject> ();
-		UnityARSessionNativeInterface.ARObjectAnchorAddedEvent += ObjectAnchorAdded;
-		UnityARSessionNativeInterface.ARObjectAnchorRemovedEvent +=  ObjectAnchorRemoved;
-		UnityARSessionNativeInterface.ARObjectAnchorUpdatedEvent +=  ObjectAnchorUpdated;
-	}
+    private void ObjectAnchorUpdated(ARObjectAnchor anchorData)
+    {
+        Debug.Log("ObjectAnchorUpdated");
+        if (objectAnchorMap.ContainsKey(anchorData.referenceObjectName))
+        {
+            var go = objectAnchorMap[anchorData.referenceObjectName];
+            //do coordinate conversion from ARKit to Unity
+            go.transform.position = UnityARMatrixOps.GetPosition(anchorData.transform);
+            go.transform.rotation = UnityARMatrixOps.GetRotation(anchorData.transform);
+        }
+    }
 
-	void ObjectAnchorUpdated (ARObjectAnchor anchorData)
-	{
-		Debug.Log ("ObjectAnchorUpdated");
-		if (objectAnchorMap.ContainsKey (anchorData.referenceObjectName)) {
-			GameObject go = objectAnchorMap [anchorData.referenceObjectName];
-			//do coordinate conversion from ARKit to Unity
-			go.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
-			go.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
+    private void ObjectAnchorRemoved(ARObjectAnchor anchorData)
+    {
+        Debug.Log("ObjectAnchorRemoved");
+        if (objectAnchorMap.ContainsKey(anchorData.referenceObjectName))
+        {
+            var rpgo = objectAnchorMap[anchorData.referenceObjectName];
+            Destroy(rpgo.gameObject);
+            objectAnchorMap.Remove(anchorData.identifier);
+        }
+    }
 
-		}
+    private void ObjectAnchorAdded(ARObjectAnchor anchorData)
+    {
+        Debug.Log("ObjectAnchorAdded");
+        var go = Instantiate(m_ObjectPrefab);
+        if (go != null)
+        {
+            //do coordinate conversion from ARKit to Unity
+            go.transform.position = UnityARMatrixOps.GetPosition(anchorData.transform);
+            go.transform.rotation = UnityARMatrixOps.GetRotation(anchorData.transform);
 
-	}
+            objectAnchorMap[anchorData.referenceObjectName] = go;
+            go.name = anchorData.referenceObjectName;
+            var objText = go.GetComponent<ObjectText>();
+            if (objText) objText.UpdateTextMesh(anchorData.referenceObjectName);
+        }
+    }
 
-	void ObjectAnchorRemoved (ARObjectAnchor anchorData)
-	{
-		Debug.Log ("ObjectAnchorRemoved");
-		if (objectAnchorMap.ContainsKey (anchorData.referenceObjectName)) {
-			GameObject rpgo = objectAnchorMap [anchorData.referenceObjectName];
-			GameObject.Destroy (rpgo.gameObject);
-			objectAnchorMap.Remove (anchorData.identifier);
-		}
-	}
+    private void OnDestroy()
+    {
+        UnityARSessionNativeInterface.ARObjectAnchorAddedEvent -= ObjectAnchorAdded;
+        UnityARSessionNativeInterface.ARObjectAnchorRemovedEvent -= ObjectAnchorRemoved;
+        UnityARSessionNativeInterface.ARObjectAnchorUpdatedEvent -= ObjectAnchorUpdated;
 
-	void ObjectAnchorAdded (ARObjectAnchor anchorData)
-	{
-		Debug.Log ("ObjectAnchorAdded");
-		GameObject go = GameObject.Instantiate<GameObject> (m_ObjectPrefab);
-		if (go != null) 
-		{
-			//do coordinate conversion from ARKit to Unity
-			go.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
-			go.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
+        foreach (var rpgo in objectAnchorMap.Values) Destroy(rpgo);
 
-			objectAnchorMap [anchorData.referenceObjectName] = go;
-			go.name = anchorData.referenceObjectName;
-			ObjectText objText = go.GetComponent<ObjectText> ();
-			if (objText) 
-			{
-				objText.UpdateTextMesh (anchorData.referenceObjectName);
-			}
-
-		}
-
-	}
-
-	void OnDestroy()
-	{
-		UnityARSessionNativeInterface.ARObjectAnchorAddedEvent -= ObjectAnchorAdded;
-		UnityARSessionNativeInterface.ARObjectAnchorRemovedEvent -=  ObjectAnchorRemoved;
-		UnityARSessionNativeInterface.ARObjectAnchorUpdatedEvent -=  ObjectAnchorUpdated;
-
-		foreach (GameObject rpgo in objectAnchorMap.Values) 
-		{
-			GameObject.Destroy (rpgo);
-		}
-
-		objectAnchorMap.Clear ();
-
-	}
+        objectAnchorMap.Clear();
+    }
 
 
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+    }
 }

@@ -1,104 +1,101 @@
-using UnityEngine;
-using System.Collections;
-using System.Runtime.InteropServices;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using AOT;
-using System.Text;
 
 namespace UnityEngine.XR.iOS
 {
+    public static class ARBlendShapeLocation
+    {
+        public const string BrowDownLeft = "browDown_L";
+        public const string BrowDownRight = "browDown_R";
+        public const string BrowInnerUp = "browInnerUp";
+        public const string BrowOuterUpLeft = "browOuterUp_L";
+        public const string BrowOuterUpRight = "browOuterUp_R";
+        public const string CheekPuff = "cheekPuff";
+        public const string CheekSquintLeft = "cheekSquint_L";
+        public const string CheekSquintRight = "cheekSquint_R";
+        public const string EyeBlinkLeft = "eyeBlink_L";
+        public const string EyeBlinkRight = "eyeBlink_R";
+        public const string EyeLookDownLeft = "eyeLookDown_L";
+        public const string EyeLookDownRight = "eyeLookDown_R";
+        public const string EyeLookInLeft = "eyeLookIn_L";
+        public const string EyeLookInRight = "eyeLookIn_R";
+        public const string EyeLookOutLeft = "eyeLookOut_L";
+        public const string EyeLookOutRight = "eyeLookOut_R";
+        public const string EyeLookUpLeft = "eyeLookUp_L";
+        public const string EyeLookUpRight = "eyeLookUp_R";
+        public const string EyeSquintLeft = "eyeSquint_L";
+        public const string EyeSquintRight = "eyeSquint_R";
+        public const string EyeWideLeft = "eyeWide_L";
+        public const string EyeWideRight = "eyeWide_R";
+        public const string JawForward = "jawForward";
+        public const string JawLeft = "jawLeft";
+        public const string JawOpen = "jawOpen";
+        public const string JawRight = "jawRight";
+        public const string MouthClose = "mouthClose";
+        public const string MouthDimpleLeft = "mouthDimple_L";
+        public const string MouthDimpleRight = "mouthDimple_R";
+        public const string MouthFrownLeft = "mouthFrown_L";
+        public const string MouthFrownRight = "mouthFrown_R";
+        public const string MouthFunnel = "mouthFunnel";
+        public const string MouthLeft = "mouthLeft";
+        public const string MouthLowerDownLeft = "mouthLowerDown_L";
+        public const string MouthLowerDownRight = "mouthLowerDown_R";
+        public const string MouthPressLeft = "mouthPress_L";
+        public const string MouthPressRight = "mouthPress_R";
+        public const string MouthPucker = "mouthPucker";
+        public const string MouthRight = "mouthRight";
+        public const string MouthRollLower = "mouthRollLower";
+        public const string MouthRollUpper = "mouthRollUpper";
+        public const string MouthShrugLower = "mouthShrugLower";
+        public const string MouthShrugUpper = "mouthShrugUpper";
+        public const string MouthSmileLeft = "mouthSmile_L";
+        public const string MouthSmileRight = "mouthSmile_R";
+        public const string MouthStretchLeft = "mouthStretch_L";
+        public const string MouthStretchRight = "mouthStretch_R";
+        public const string MouthUpperUpLeft = "mouthUpperUp_L";
+        public const string MouthUpperUpRight = "mouthUpperUp_R";
+        public const string NoseSneerLeft = "noseSneer_L";
+        public const string NoseSneerRight = "noseSneer_R";
+        public const string TongueOut = "tongueOut";
+    }
 
-	public static class ARBlendShapeLocation
-	{
-		 public const string  BrowDownLeft        =   "browDown_L";
-	 	 public const string  BrowDownRight       =   "browDown_R";
-		 public const string  BrowInnerUp         =   "browInnerUp";
-		 public const string  BrowOuterUpLeft     =   "browOuterUp_L";
-		 public const string  BrowOuterUpRight    =   "browOuterUp_R";
-		 public const string  CheekPuff           =   "cheekPuff";
-		 public const string  CheekSquintLeft     =   "cheekSquint_L";
-		 public const string  CheekSquintRight    =   "cheekSquint_R";
-		 public const string  EyeBlinkLeft        =   "eyeBlink_L";
-		 public const string  EyeBlinkRight       =   "eyeBlink_R";
-		 public const string  EyeLookDownLeft     =   "eyeLookDown_L";
-		 public const string  EyeLookDownRight    =   "eyeLookDown_R";
-		 public const string  EyeLookInLeft       =   "eyeLookIn_L";
-		 public const string  EyeLookInRight      =   "eyeLookIn_R";
-		 public const string  EyeLookOutLeft      =   "eyeLookOut_L";
-		 public const string  EyeLookOutRight     =   "eyeLookOut_R";
-		 public const string  EyeLookUpLeft       =   "eyeLookUp_L";
-		 public const string  EyeLookUpRight      =   "eyeLookUp_R";
-		 public const string  EyeSquintLeft       =   "eyeSquint_L";
-		 public const string  EyeSquintRight      =   "eyeSquint_R";
-		 public const string  EyeWideLeft         =   "eyeWide_L";
-		 public const string  EyeWideRight        =   "eyeWide_R";
-		 public const string  JawForward          =   "jawForward";
-		 public const string  JawLeft             =   "jawLeft";
-		 public const string  JawOpen             =   "jawOpen";
-		 public const string  JawRight            =   "jawRight";
-		 public const string  MouthClose          =   "mouthClose";
-		 public const string  MouthDimpleLeft     =   "mouthDimple_L";
-		 public const string  MouthDimpleRight    =   "mouthDimple_R";
-		 public const string  MouthFrownLeft      =   "mouthFrown_L";
-		 public const string  MouthFrownRight     =   "mouthFrown_R";
-		 public const string  MouthFunnel         =   "mouthFunnel";
-		 public const string  MouthLeft           =   "mouthLeft";
-		 public const string  MouthLowerDownLeft  =   "mouthLowerDown_L";
-		 public const string  MouthLowerDownRight =   "mouthLowerDown_R";
-		 public const string  MouthPressLeft      =   "mouthPress_L";
-		 public const string  MouthPressRight     =   "mouthPress_R";
-		 public const string  MouthPucker         =   "mouthPucker";
-		 public const string  MouthRight          =   "mouthRight";
-		 public const string  MouthRollLower      =   "mouthRollLower";
-		 public const string  MouthRollUpper      =   "mouthRollUpper";
-		 public const string  MouthShrugLower     =   "mouthShrugLower";
-		 public const string  MouthShrugUpper     =   "mouthShrugUpper";
-		 public const string  MouthSmileLeft      =   "mouthSmile_L";
-		 public const string  MouthSmileRight     =   "mouthSmile_R";
-		 public const string  MouthStretchLeft    =   "mouthStretch_L";
-		 public const string  MouthStretchRight   =   "mouthStretch_R";
-		 public const string  MouthUpperUpLeft    =   "mouthUpperUp_L";
-		 public const string  MouthUpperUpRight   =   "mouthUpperUp_R";
-		 public const string  NoseSneerLeft       =   "noseSneer_L";
-		 public const string  NoseSneerRight      =   "noseSneer_R";
-		 public const string  TongueOut           =   "tongueOut";
-	}
+
+    public struct UnityARFaceGeometry
+    {
+        public int vertexCount;
+        public IntPtr vertices;
+        public int textureCoordinateCount;
+        public IntPtr textureCoordinates;
+        public int triangleCount;
+        public IntPtr triangleIndices;
+    }
+
+    public struct UnityARFaceAnchorData
+    {
+        public IntPtr ptrIdentifier;
+
+        /**
+         The transformation matrix that defines the anchor's rotation, translation and scale in world coordinates.
+         */
+        public UnityARMatrix4x4 transform;
+
+        public string identifierStr
+        {
+            get { return Marshal.PtrToStringAuto(ptrIdentifier); }
+        }
+
+        public UnityARFaceGeometry faceGeometry;
+        public IntPtr blendShapes;
+        public UnityARMatrix4x4 leftEyeTransform;
+        public UnityARMatrix4x4 rightEyeTransform;
+        public Vector3 lookAtPoint;
+        public bool isTracked; //this is from the new ARTrackable protocol that ARFaceAnchor now subscribes to
+    }
 
 
-	public struct UnityARFaceGeometry
-	{
-		public int vertexCount;
-		public IntPtr vertices;
-		public int textureCoordinateCount;
-		public IntPtr textureCoordinates;
-		public int triangleCount;
-		public IntPtr triangleIndices;
-
-	}
-
-	public struct UnityARFaceAnchorData
-	{
-
-		public IntPtr ptrIdentifier;
-
-		/**
- 		The transformation matrix that defines the anchor's rotation, translation and scale in world coordinates.
-		 */
-		public UnityARMatrix4x4 transform;
-
-		public string identifierStr { get { return Marshal.PtrToStringAuto(this.ptrIdentifier); } }
-
-		public UnityARFaceGeometry faceGeometry;
-		public IntPtr blendShapes;
-		public UnityARMatrix4x4 leftEyeTransform;
-		public UnityARMatrix4x4 rightEyeTransform;
-		public Vector3 lookAtPoint;
-		public bool isTracked;   //this is from the new ARTrackable protocol that ARFaceAnchor now subscribes to
-	}
-		
-
-	#if !UNITY_EDITOR && UNITY_IOS
+#if !UNITY_EDITOR && UNITY_IOS
 	public class ARFaceGeometry
 	{
 		internal UnityARFaceGeometry uFaceGeometry { private get; set; }
@@ -149,8 +146,8 @@ namespace UnityEngine.XR.iOS
 
 			for (var count = 0; count < m_WorkVertexCount; count++)
 			{
-				m_Vertices[count / 4].x =  m_WorkVertices[count++];
-				m_Vertices[count / 4].y =  m_WorkVertices[count++];
+				m_Vertices[count / 4].x = m_WorkVertices[count++];
+				m_Vertices[count / 4].y = m_WorkVertices[count++];
 				m_Vertices[count / 4].z = -m_WorkVertices[count++];
 			}
 
@@ -161,9 +158,9 @@ namespace UnityEngine.XR.iOS
 		{
 			Marshal.Copy (ptrIndices, m_WorkIndices, 0, m_IndexCount);
 
-			for (var count = 0; count < m_IndexCount; count+=3) {
+			for (var count = 0; count < m_IndexCount; count += 3) {
 				//reverse winding order
-				m_TriangleIndices [count] =     m_WorkIndices [count];
+				m_TriangleIndices [count] = m_WorkIndices [count];
 				m_TriangleIndices [count + 1] = m_WorkIndices [count + 2];
 				m_TriangleIndices [count + 2] = m_WorkIndices [count + 1];
 			}
@@ -283,5 +280,5 @@ namespace UnityEngine.XR.iOS
 			blendshapesDictionary.Add(key, value);
 		}
 	}
-	#endif
+#endif
 }

@@ -1,61 +1,50 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
 [RequireComponent(typeof(ReflectionProbe))]
-public class ReflectionProbeGameObject : MonoBehaviour {
+public class ReflectionProbeGameObject : MonoBehaviour
+{
+    [SerializeField] private GameObject debugExtentGO;
 
-	ReflectionProbe reflectionProbe;
-	bool latchUpdate = false;
-	Cubemap latchedTexture = null;
+    private Cubemap latchedTexture;
+    private bool latchUpdate;
 
-	[SerializeField]
-	GameObject debugExtentGO;
+    private ReflectionProbe reflectionProbe;
 
-	// Use this for initialization
-	void Start()
-	{
-		reflectionProbe = GetComponent<ReflectionProbe> ();
-	}
+    // Use this for initialization
+    private void Start()
+    {
+        reflectionProbe = GetComponent<ReflectionProbe>();
+    }
 
 
-	public void UpdateEnvironmentProbe(AREnvironmentProbeAnchor environmentProbeAnchor)
-	{
-		transform.position = UnityARMatrixOps.GetPosition (environmentProbeAnchor.transform);
+    public void UpdateEnvironmentProbe(AREnvironmentProbeAnchor environmentProbeAnchor)
+    {
+        transform.position = UnityARMatrixOps.GetPosition(environmentProbeAnchor.transform);
 
-		Quaternion rot = UnityARMatrixOps.GetRotation (environmentProbeAnchor.transform);
+        var rot = UnityARMatrixOps.GetRotation(environmentProbeAnchor.transform);
 
-		//rot.z = -rot.z;
-		//rot.w = -rot.w;
+        //rot.z = -rot.z;
+        //rot.w = -rot.w;
 
-		transform.rotation = rot;
+        transform.rotation = rot;
 
-		if (reflectionProbe != null) 
-		{
-			reflectionProbe.size = environmentProbeAnchor.Extent;
-		}
+        if (reflectionProbe != null) reflectionProbe.size = environmentProbeAnchor.Extent;
 
-		if (debugExtentGO != null) 
-		{
-			debugExtentGO.transform.localScale = environmentProbeAnchor.Extent;
-		}
+        if (debugExtentGO != null) debugExtentGO.transform.localScale = environmentProbeAnchor.Extent;
 
-		latchedTexture = environmentProbeAnchor.Cubemap;
-		latchUpdate = true;
-	}
+        latchedTexture = environmentProbeAnchor.Cubemap;
+        latchUpdate = true;
+    }
 
-	void Update()
-	{
-		//always make sure to update texture in next update
-		if (latchUpdate && reflectionProbe != null) 
-		{
-			if (reflectionProbe.customBakedTexture != null)
-			{
-				Object.Destroy(reflectionProbe.customBakedTexture);
-			}
-			reflectionProbe.customBakedTexture = latchedTexture;
-			latchUpdate = false;
-		}
-	}
+    private void Update()
+    {
+        //always make sure to update texture in next update
+        if (latchUpdate && reflectionProbe != null)
+        {
+            if (reflectionProbe.customBakedTexture != null) Destroy(reflectionProbe.customBakedTexture);
+            reflectionProbe.customBakedTexture = latchedTexture;
+            latchUpdate = false;
+        }
+    }
 }

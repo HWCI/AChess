@@ -1,97 +1,93 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.iOS;
 
-public class ObjectScanSessionManager : MonoBehaviour {
+public class ObjectScanSessionManager : MonoBehaviour
+{
+    public bool enableAutoFocus = true;
+    public bool enableLightEstimation = true;
+    public bool getPointCloudData = true;
 
-	public Camera m_camera;
-	private UnityARSessionNativeInterface m_session;
-
-	[Header("AR Config Options")]
-	public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
-	public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
-	public bool getPointCloudData = true;
-	public bool enableLightEstimation = true;
-	public bool enableAutoFocus = true;
+    public Camera m_camera;
+    private UnityARSessionNativeInterface m_session;
+    public UnityARPlaneDetection planeDetection = UnityARPlaneDetection.Horizontal;
 
 
-	private bool sessionStarted = false;
+    private bool sessionStarted;
 
-	public ARKitWorldTrackingSessionConfiguration sessionConfiguration
-	{
-		get
-		{
-			ARKitWorldTrackingSessionConfiguration config = new ARKitWorldTrackingSessionConfiguration ();
-			config.planeDetection = planeDetection;
-			config.alignment = startAlignment;
-			config.getPointCloudData = getPointCloudData;
-			config.enableLightEstimation = enableLightEstimation;
-			config.enableAutoFocus = enableAutoFocus;
+    [Header("AR Config Options")] public UnityARAlignment startAlignment = UnityARAlignment.UnityARAlignmentGravity;
 
-			return config;
-		}
-	}
+    public ARKitWorldTrackingSessionConfiguration sessionConfiguration
+    {
+        get
+        {
+            var config = new ARKitWorldTrackingSessionConfiguration();
+            config.planeDetection = planeDetection;
+            config.alignment = startAlignment;
+            config.getPointCloudData = getPointCloudData;
+            config.enableLightEstimation = enableLightEstimation;
+            config.enableAutoFocus = enableAutoFocus;
 
-	//Warning: using this configuration is expensive CPU and battery-wise - use in limited amounts!
-	public ARKitObjectScanningSessionConfiguration objScanSessionConfiguration
-	{
-		get
-		{
-			ARKitObjectScanningSessionConfiguration config = new ARKitObjectScanningSessionConfiguration ();
-			config.planeDetection = planeDetection;
-			config.alignment = startAlignment;
-			config.getPointCloudData = getPointCloudData;
-			config.enableLightEstimation = enableLightEstimation;
-			config.enableAutoFocus = enableAutoFocus;
+            return config;
+        }
+    }
 
-			return config;
-		}
-	}
+    //Warning: using this configuration is expensive CPU and battery-wise - use in limited amounts!
+    public ARKitObjectScanningSessionConfiguration objScanSessionConfiguration
+    {
+        get
+        {
+            var config = new ARKitObjectScanningSessionConfiguration();
+            config.planeDetection = planeDetection;
+            config.alignment = startAlignment;
+            config.getPointCloudData = getPointCloudData;
+            config.enableLightEstimation = enableLightEstimation;
+            config.enableAutoFocus = enableAutoFocus;
 
-	// Use this for initialization
-	void Start () {
-		m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
-		if (m_camera == null) {
-			m_camera = Camera.main;
-		}
-		Application.targetFrameRate = 60;
+            return config;
+        }
+    }
 
-		StartObjectScanningSession ();
-	}
+    // Use this for initialization
+    private void Start()
+    {
+        m_session = UnityARSessionNativeInterface.GetARSessionNativeInterface();
+        if (m_camera == null) m_camera = Camera.main;
+        Application.targetFrameRate = 60;
 
-
-	public void StartObjectScanningSession()
-	{
-		sessionStarted = false;
-		var config =  objScanSessionConfiguration;
-		if (config.IsSupported) {
-			m_session.RunWithConfig (config);
-			UnityARSessionNativeInterface.ARFrameUpdatedEvent += FirstFrameUpdate;
-		}
-	}
+        StartObjectScanningSession();
+    }
 
 
-	void FirstFrameUpdate(UnityARCamera cam)
-	{
-		sessionStarted = true;
-		UnityARSessionNativeInterface.ARFrameUpdatedEvent -= FirstFrameUpdate;
-	}
+    public void StartObjectScanningSession()
+    {
+        sessionStarted = false;
+        var config = objScanSessionConfiguration;
+        if (config.IsSupported)
+        {
+            m_session.RunWithConfig(config);
+            UnityARSessionNativeInterface.ARFrameUpdatedEvent += FirstFrameUpdate;
+        }
+    }
 
-	// Update is called once per frame
 
-	void Update () {
+    private void FirstFrameUpdate(UnityARCamera cam)
+    {
+        sessionStarted = true;
+        UnityARSessionNativeInterface.ARFrameUpdatedEvent -= FirstFrameUpdate;
+    }
 
-		if (m_camera != null && sessionStarted)
-		{
-			// JUST WORKS!
-			Matrix4x4 matrix = m_session.GetCameraPose();
-			m_camera.transform.localPosition = UnityARMatrixOps.GetPosition(matrix);
-			m_camera.transform.localRotation = UnityARMatrixOps.GetRotation (matrix);
+    // Update is called once per frame
 
-			m_camera.projectionMatrix = m_session.GetCameraProjection ();
-		}
+    private void Update()
+    {
+        if (m_camera != null && sessionStarted)
+        {
+            // JUST WORKS!
+            var matrix = m_session.GetCameraPose();
+            m_camera.transform.localPosition = UnityARMatrixOps.GetPosition(matrix);
+            m_camera.transform.localRotation = UnityARMatrixOps.GetRotation(matrix);
 
-	}
-
+            m_camera.projectionMatrix = m_session.GetCameraProjection();
+        }
+    }
 }

@@ -1,23 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class Ballz : MonoBehaviour {
+public class Ballz : MonoBehaviour
+{
+    private float startingY;
 
-	public float yDistanceThreshold;
+    public float yDistanceThreshold;
 
-	private float startingY;
+    // Use this for initialization
+    private void Start()
+    {
+        startingY = transform.position.y;
+    }
 
-	// Use this for initialization
-	void Start () {
-		startingY = transform.position.y;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-		if (Mathf.Abs (startingY - transform.position.y) > yDistanceThreshold) {
-			Destroy (gameObject);
-		}
-	}
+    // Update is called once per frame
+    private void Update()
+    {
+        if (Mathf.Abs(startingY - transform.position.y) > yDistanceThreshold) Destroy(gameObject);
+    }
 }

@@ -1,23 +1,22 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System;
 
 /// <summary>
-/// Displays one of the color values of aColorPicker
+///     Displays one of the color values of aColorPicker
 /// </summary>
 [RequireComponent(typeof(Slider))]
 public class ColorSlider : MonoBehaviour
 {
     public ColorPicker hsvpicker;
 
-    /// <summary>
-    /// Which value this slider can edit.
-    /// </summary>
-    public ColorValues type;
+    private bool listen = true;
 
     private Slider slider;
 
-    private bool listen = true;
+    /// <summary>
+    ///     Which value this slider can edit.
+    /// </summary>
+    public ColorValues type;
 
     private void Awake()
     {
@@ -52,8 +51,6 @@ public class ColorSlider : MonoBehaviour
             case ColorValues.A:
                 slider.normalizedValue = newColor.a;
                 break;
-            default:
-                break;
         }
     }
 
@@ -71,8 +68,6 @@ public class ColorSlider : MonoBehaviour
             case ColorValues.Value:
                 slider.normalizedValue = value;
                 break;
-            default:
-                break;
         }
     }
 
@@ -86,6 +81,7 @@ public class ColorSlider : MonoBehaviour
 
             hsvpicker.AssignColor(type, newValue);
         }
+
         listen = true;
     }
 }

@@ -1,19 +1,17 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
+using UnityEngine;
 using UnityEngine.UI;
-using System.Text;
-using System.Globalization;
 
 [RequireComponent(typeof(InputField))]
 public class HexColorField : MonoBehaviour
 {
-    public ColorPicker hsvpicker;
+    private const string hexRegex = "^#?(?:[0-9a-fA-F]{3,4}){1,2}$";
 
     public bool displayAlpha;
 
     private InputField hexInputField;
-
-    private const string hexRegex = "^#?(?:[0-9a-fA-F]{3,4}){1,2}$";
+    public ColorPicker hsvpicker;
 
     private void Awake()
     {
@@ -41,58 +39,48 @@ public class HexColorField : MonoBehaviour
         if (HexToColor(newHex, out color))
             hsvpicker.CurrentColor = color;
         else
-            Debug.Log("hex value is in the wrong format, valid formats are: #RGB, #RGBA, #RRGGBB and #RRGGBBAA (# is optional)");
+            Debug.Log(
+                "hex value is in the wrong format, valid formats are: #RGB, #RGBA, #RRGGBB and #RRGGBBAA (# is optional)");
     }
 
     private string ColorToHex(Color32 color)
     {
         if (displayAlpha)
             return string.Format("#{0:X2}{1:X2}{2:X2}{3:X2}", color.r, color.g, color.b, color.a);
-        else
-            return string.Format("#{0:X2}{1:X2}{2:X2}", color.r, color.g, color.b);
+        return string.Format("#{0:X2}{1:X2}{2:X2}", color.r, color.g, color.b);
     }
 
     public static bool HexToColor(string hex, out Color32 color)
     {
         // Check if this is a valid hex string (# is optional)
-        if (System.Text.RegularExpressions.Regex.IsMatch(hex, hexRegex))
+        if (Regex.IsMatch(hex, hexRegex))
         {
-            int startIndex = hex.StartsWith("#") ? 1 : 0;
+            var startIndex = hex.StartsWith("#") ? 1 : 0;
 
             if (hex.Length == startIndex + 8) //#RRGGBBAA
-            {
                 color = new Color32(byte.Parse(hex.Substring(startIndex, 2), NumberStyles.AllowHexSpecifier),
                     byte.Parse(hex.Substring(startIndex + 2, 2), NumberStyles.AllowHexSpecifier),
                     byte.Parse(hex.Substring(startIndex + 4, 2), NumberStyles.AllowHexSpecifier),
                     byte.Parse(hex.Substring(startIndex + 6, 2), NumberStyles.AllowHexSpecifier));
-            }
-            else if (hex.Length == startIndex + 6)  //#RRGGBB
-            {
+            else if (hex.Length == startIndex + 6) //#RRGGBB
                 color = new Color32(byte.Parse(hex.Substring(startIndex, 2), NumberStyles.AllowHexSpecifier),
                     byte.Parse(hex.Substring(startIndex + 2, 2), NumberStyles.AllowHexSpecifier),
                     byte.Parse(hex.Substring(startIndex + 4, 2), NumberStyles.AllowHexSpecifier),
                     255);
-            }
             else if (hex.Length == startIndex + 4) //#RGBA
-            {
                 color = new Color32(byte.Parse("" + hex[startIndex] + hex[startIndex], NumberStyles.AllowHexSpecifier),
                     byte.Parse("" + hex[startIndex + 1] + hex[startIndex + 1], NumberStyles.AllowHexSpecifier),
                     byte.Parse("" + hex[startIndex + 2] + hex[startIndex + 2], NumberStyles.AllowHexSpecifier),
                     byte.Parse("" + hex[startIndex + 3] + hex[startIndex + 3], NumberStyles.AllowHexSpecifier));
-            }
-            else  //#RGB
-            {
+            else //#RGB
                 color = new Color32(byte.Parse("" + hex[startIndex] + hex[startIndex], NumberStyles.AllowHexSpecifier),
                     byte.Parse("" + hex[startIndex + 1] + hex[startIndex + 1], NumberStyles.AllowHexSpecifier),
                     byte.Parse("" + hex[startIndex + 2] + hex[startIndex + 2], NumberStyles.AllowHexSpecifier),
                     255);
-            }
             return true;
         }
-        else
-        {
-            color = new Color32();
-            return false;
-        }
+
+        color = new Color32();
+        return false;
     }
 }

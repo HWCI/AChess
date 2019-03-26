@@ -1,24 +1,21 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
 
-[RequireComponent(typeof(BoxSlider), typeof(RawImage)), ExecuteInEditMode()]
+[RequireComponent(typeof(BoxSlider), typeof(RawImage))]
+[ExecuteInEditMode]
 public class SVBoxSlider : MonoBehaviour
 {
-    public ColorPicker picker;
-
-    private BoxSlider slider;
     private RawImage image;
 
     private float lastH = -1;
     private bool listen = true;
+    public ColorPicker picker;
+
+    private BoxSlider slider;
 
     public RectTransform rectTransform
     {
-        get
-        {
-            return transform as RectTransform;
-        }
+        get { return transform as RectTransform; }
     }
 
     private void Awake()
@@ -68,6 +65,7 @@ public class SVBoxSlider : MonoBehaviour
             picker.AssignColor(ColorValues.Saturation, saturation);
             picker.AssignColor(ColorValues.Value, value);
         }
+
         listen = true;
     }
 
@@ -99,18 +97,16 @@ public class SVBoxSlider : MonoBehaviour
         if (image.texture != null)
             DestroyImmediate(image.texture);
 
-        Texture2D texture = new Texture2D(100, 100);
+        var texture = new Texture2D(100, 100);
         texture.hideFlags = HideFlags.DontSave;
 
-        for (int s = 0; s < 100; s++)
+        for (var s = 0; s < 100; s++)
         {
-            Color32[] colors = new Color32[100];
-            for (int v = 0; v < 100; v++)
-            {
-                colors[v] = HSVUtil.ConvertHsvToRgb(h, (float)s / 100, (float)v / 100, 1);
-            }
+            var colors = new Color32[100];
+            for (var v = 0; v < 100; v++) colors[v] = HSVUtil.ConvertHsvToRgb(h, (float) s / 100, (float) v / 100, 1);
             texture.SetPixels32(s, 0, 1, 100, colors);
         }
+
         texture.Apply();
 
         image.texture = texture;
