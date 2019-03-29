@@ -4,7 +4,10 @@
 TagManager:
   serializedVersion: 2
   tags:
+  - Fly
   - Grid
+  - Walker
+  - Water
   layers:
   - Default
   - TransparentFX
@@ -26,7 +29,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Animal
   - 
   - 
   - 
