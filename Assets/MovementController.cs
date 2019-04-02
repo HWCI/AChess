@@ -25,40 +25,46 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
 #if UNITY_EDITOR //we will only use this script on the editor side, though there is nothing that would prevent it from working on device
-        if (Input.GetMouseButtonDown(0))
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
         {
-            RaycastHit hit;
-            Vector3 inputpos;
-            inputpos = Input.mousePosition;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(inputpos), out hit, 100))
+            if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log(hit.collider.gameObject.name);
-                if (hit.collider.gameObject.CompareTag("Grid"))
-                    if (_chara != null)
-                    {
-                        if (_target == hit.transform)
+                RaycastHit hit;
+                Vector3 inputpos;
+                inputpos = Input.mousePosition;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(inputpos), out hit, 100))
+                {
+                    Debug.Log(hit.collider.gameObject.name);
+                    if (hit.collider.gameObject.CompareTag("Grid"))
+                        if (_chara != null)
                         {
-                            _chara.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
-                            Destroy(_trail);
-                        }
-                        else
-                        {
-                            _target = hit.transform;
-                            if (_trail != null)
+                            if (_target == hit.transform)
                             {
+                                _chara.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
                                 Destroy(_trail);
                             }
-                            _trail = Instantiate(Trail, _chara.transform.position, Quaternion.identity);
-                            _trail.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
-                        }
-                    }
+                            else
+                            {
+                                _target = hit.transform;
+                                if (_trail != null)
+                                {
+                                    Destroy(_trail);
+                                }
 
-                if (hit.collider.gameObject.CompareTag("Player"))
-                    _chara = hit.transform.GetComponent<CharacterScript>();
+                                _trail = Instantiate(Trail, _chara.transform.position, Quaternion.identity);
+                                _trail.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+                            }
+                        }
+
+                    if (hit.collider.gameObject.CompareTag("Player"))
+                        _chara = hit.transform.GetComponent<CharacterScript>();
+                }
             }
         }
     }
 #else
+if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
+        {
 		if (Input.touchCount > 0 )
 		{
 			var touch = Input.GetTouch(0);
@@ -132,6 +138,7 @@ public class MovementController : MonoBehaviour
             }
     
 			}
+}
 		}
 #endif 
 

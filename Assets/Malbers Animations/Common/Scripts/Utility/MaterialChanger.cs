@@ -340,9 +340,9 @@ namespace MalbersAnimations.Utilities
             Material[] currentMaterial = mesh.sharedMaterials;
             currentMaterial[indexM] = mat;
 
-            foreach (var mesh in LODs)
+            foreach (var _mesh in LODs)
             {
-                mesh.sharedMaterials = currentMaterial;
+                _mesh.sharedMaterials = currentMaterial;
             }
         }
 

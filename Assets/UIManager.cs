@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+    private static string readyText = "Tap on screen to place scene";
+    private static string enemyText = "Enemy Turn";
+    private static string playerText = "Your Turn";
+    private static string endText = "Game Complete";
     [Header("Text")]
     public Text phasetxt;
     public Text skill1txt;
@@ -72,6 +76,14 @@ public class UIManager : MonoBehaviour
         skill3txt.text = txt;
     }
 
+    public void ShowButtons(bool _show)
+    {
+        ShowSkill1Button(_show);
+        ShowSkill2Button(_show);
+        ShowSkill3Button(_show);
+        ShowTurnEndButton(_show);
+    }
+
     public void ShowSkill1Button(bool _show)
     {
         Skill1.gameObject.SetActive(_show);
@@ -87,6 +99,33 @@ public class UIManager : MonoBehaviour
     public void ShowTurnEndButton(bool _show)
     {
         EndTurn.gameObject.SetActive(_show);
+    }
+
+    public void StateGUIChange()
+    {
+        if (GameManager.instance.gameStage == GameManager.GameState.Readying)
+        {
+            ShowButtons(false);
+            SetPhaseTxt(readyText);
+        }
+
+        if (GameManager.instance.gameStage == GameManager.GameState.EnemyTurn)
+        {
+            ShowButtons(false);
+            SetPhaseTxt(enemyText);
+        }
+        
+        if (GameManager.instance.gameStage == GameManager.GameState.Resolution)
+        {
+            ShowButtons(false);
+            SetPhaseTxt(endText);
+        }
+
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
+        {
+            ShowButtons(true);
+            SetPhaseTxt(playerText);
+        }
     }
     
 }

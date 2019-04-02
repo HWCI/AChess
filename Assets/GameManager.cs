@@ -80,16 +80,6 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
-        else
-        {
-            UIManager.instance.phasetxt.text = "Your Turn";
-
-        }
-
-        if (gameStage == GameState.EnemyTurn)
-        {
-            UIManager.instance.phasetxt.text = "Enemy Turn";
-        }
     }
 
     void SetScene(Vector3 atPosition, Transform parent)
