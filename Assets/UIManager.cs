@@ -44,19 +44,22 @@ public class UIManager : MonoBehaviour
     {
         if (btn == Skill1)
         {
-            
+            MovementController.instance.CastSkill1();
         }if (btn == Skill2)
         {
-            
+            MovementController.instance.CastSkill2();
         }if (btn == Skill3)
         {
-            
+            MovementController.instance.CastSkill3();
         }if (btn == EndTurn)
         {
-            
+            if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty || GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+            {
+                GameManager.instance.gameStage = GameManager.GameState.EnemyTurn;
+            }
         }if (btn == Reset)
         {
-            
+            GameManager.instance.RemoveScene();
         }
     }
     public void SetSkill1Txt(string txt)
@@ -121,8 +124,16 @@ public class UIManager : MonoBehaviour
             SetPhaseTxt(endText);
         }
 
-        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty)
         {
+            ShowButtons(false);
+            SetPhaseTxt(playerText);
+        }
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+        {
+            SetSkill1Txt(MovementController.instance._chara.GetSkill1Name());
+            SetSkill2Txt(MovementController.instance._chara.GetSkill2Name());
+            SetSkill3Txt(MovementController.instance._chara.GetSkill3Name());
             ShowButtons(true);
             SetPhaseTxt(playerText);
         }

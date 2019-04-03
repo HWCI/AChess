@@ -15,7 +15,8 @@ public class GameManager : MonoBehaviour
     public enum GameState
     {
         Readying,
-        PlayerTurn,
+        PlayerEmpty,
+        PlayerSelect,
         EnemyTurn,
         Resolution
     }
@@ -99,7 +100,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void RemoveScene()
+    public void RemoveScene()
     {
         Destroy(_currentScene);
         state = ARState.ScanPlane;
