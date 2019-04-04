@@ -1,7 +1,11 @@
 using UnityEngine;
-    public abstract class SkillEffect : MonoBehaviour
+    public class SkillEffect : MonoBehaviour
     {
-        public abstract void OnCast(int range, int power, SkillType type, int AoE, CharacterScript target);
+        public void OnCast(int range, int power, SkillType type, int AoE, CharacterScript target, GameObject emitter)
+        {
+            target.Damage(power*20);
+            Instantiate(emitter);
+        }
 
         public void DealSingleDamage(CharacterScript target, int damage)
         {

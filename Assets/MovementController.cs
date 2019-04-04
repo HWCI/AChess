@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 using UnityEngine.XR.iOS;
 
 public class MovementController : MonoBehaviour
@@ -13,12 +14,20 @@ public class MovementController : MonoBehaviour
     }
 
     public static MovementController instance;
+    private enum buttonType
+    {
+        Skill1,
+        Skill2,
+        Skill3,
+        Scene
+    } 
 
     public CharacterScript _chara;
 
     public Transform _target;
     public GameObject Trail;
     private GameObject _trail;
+    private buttonType prev;
 
     // Use this for initialization
     private void Start()
@@ -110,12 +119,16 @@ public class MovementController : MonoBehaviour
             {
                 if (_target == hit.transform)
                 {
-                    _chara.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+                    _target.GetComponent<GridScript>().GreenHighlight(false);
+                    _chara.PlayerMove(hit);
                     Destroy(_trail);
+                    _target = null;
                 }
                 else
                 {
+                    _target.GetComponent<GridScript>().GreenHighlight(false);
                     _target = hit.transform;
+                    _target.GetComponent<GridScript>().GreenHighlight(true);
                     if (_trail != null)
                     {
                         Destroy(_trail);
@@ -129,6 +142,9 @@ public class MovementController : MonoBehaviour
         if (hit.collider.gameObject.CompareTag("Player"))
             _chara = hit.transform.GetComponent<CharacterScript>();
     }
+
+    
+
     public void SetChara(CharacterScript chara)
     {
         _chara = chara;
@@ -142,6 +158,31 @@ public class MovementController : MonoBehaviour
 
     public void CastSkill1()
     {
+        if (prev != buttonType.Skill1)
+        {
+            switch (_chara.GetSkill1().Type)
+            {
+                case SkillType.Target:
+                    _target.GetComponent<GridScript>().GreenHighlight(false);
+                    _target.GetComponent<GridScript>().RedHighlight(true);
+                    prev = buttonType.Skill1;
+                    break;
+                    //case SkillType.Directed:
+                    _target.GetComponent<GridScript>().GreenHighlight(false);
+                    _target.GetComponent<GridScript>().RedHighlight(true);
+                    break;
+                case SkillType.AOE:
+                    _target.GetComponent<GridScript>().GreenHighlight(false);
+                    _target.GetComponent<GridScript>().RedHighlight(true);
+                    prev = buttonType.Skill1;
+                    break;
+            }
+        }
+        else
+        {
+            if(_target.GetComponent<GridScript>().Occupant != null)
+            _chara.Skill1(_target.GetComponent<GridScript>().Occupant);
+        }
     }
     public void CastSkill2()
     {

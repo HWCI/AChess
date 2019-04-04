@@ -96,17 +96,17 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public string GetSkill1Name()
+    public Skill GetSkill1()
     {
-        return character.Skill1.name;
+        return character.Skill1;
     }
-    public string GetSkill2Name()
+    public Skill GetSkill2()
     {
-        return character.Skill2.name;
+        return character.Skill2;
     }
-    public string GetSkill3Name()
+    public Skill GetSkill3()
     {
-        return character.Skill3.name;
+        return character.Skill3;
     }
 
     public void Heal(int hp)
@@ -122,6 +122,11 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
     {
         MovementController.instance.SetChara(this);
         Debug.Log("Clicked");
+    }
+    
+    public void PlayerMove(RaycastHit hit)
+    {
+        this.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
     }
 
     public void Move(Vector3 location)

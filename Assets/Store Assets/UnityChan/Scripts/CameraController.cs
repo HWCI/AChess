@@ -13,7 +13,7 @@
 
 using UnityEngine;
 
-namespace CameraController
+namespace UCCameraController
 {
     internal enum MouseButtonDown
     {

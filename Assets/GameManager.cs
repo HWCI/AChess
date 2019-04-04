@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
     public GameObject planePrefab;
     private UnityARAnchorManager unityARAnchorManager;
     public GameObject _currentScene;
-    public NavMeshData meshdata;
+    //public NavMeshData meshdata;
     
     public delegate void GameStateChange();
     public event GameStateChange OnGameStateChange;
@@ -88,11 +88,11 @@ public class GameManager : MonoBehaviour
         if (!_currentScene.activeSelf)
         {
             //_currentScene = Instantiate(planePrefab, atPosition, Quaternion.identity, parent);
-            Vector3 offset = (meshdata.position - _currentScene.transform.position);
+           // Vector3 offset = (meshdata.position - _currentScene.transform.position);
             _currentScene.transform.position = atPosition;
-            meshdata.position = atPosition;
-            NavMesh.RemoveAllNavMeshData();
-            NavMesh.AddNavMeshData(meshdata);
+            //meshdata.position = atPosition;
+           // NavMesh.RemoveAllNavMeshData();
+           // NavMesh.AddNavMeshData(meshdata);
             
             //_currentScene.transform.parent = parent;
             _currentScene.SetActive(true);

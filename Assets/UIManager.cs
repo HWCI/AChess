@@ -37,7 +37,22 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty ||
+            GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+        {
+            if (MovementController.instance._target == null)
+            {
+                Skill1.enabled = false;
+                Skill2.enabled = false;
+                Skill3.enabled = false;
+            }
+            else
+            {
+                Skill1.enabled = true;
+                Skill2.enabled = true;
+                Skill3.enabled = true;
+            }
+        }
     }
 
     public void Onclick(Button btn)
@@ -131,9 +146,9 @@ public class UIManager : MonoBehaviour
         }
         if (GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
         {
-            SetSkill1Txt(MovementController.instance._chara.GetSkill1Name());
-            SetSkill2Txt(MovementController.instance._chara.GetSkill2Name());
-            SetSkill3Txt(MovementController.instance._chara.GetSkill3Name());
+            SetSkill1Txt(MovementController.instance._chara.GetSkill1().name);
+            SetSkill2Txt(MovementController.instance._chara.GetSkill2().name);
+            SetSkill3Txt(MovementController.instance._chara.GetSkill3().name);
             ShowButtons(true);
             SetPhaseTxt(playerText);
         }
