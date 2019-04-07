@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2d9a50f42ce5e347a1e3156f7171e32, type: 3}
-  m_Name: Fireball
+  m_Name: Stab
   m_EditorClassIdentifier: 
-  skillName: Fireball
-  skillId: 1
-  Range: 10
-  Power: 20
-  Type: 0
-  AoE: 1
-  emitter: {fileID: 1947871717301538, guid: a990e3ac1318b834488c784d851f42a9, type: 3}
+  skillName: Stab
+  skillId: 2
+  Range: 1
+  Power: 35
+  Type: 2
+  AoE: 0
+  emitter: {fileID: 0}

@@ -3,11 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Skill Config", menuName = "Skills", order = 1)]
 public class Skill : ScriptableObject
 {
-    public string skillName { get; private set; }
+    [SerializeField] public string skillName;
     [SerializeField] private int skillId;
     [SerializeField] int Range;
     [SerializeField] int Power;
-    public SkillType Type { get; private set; }
+    [SerializeField] public SkillType Type;
     [SerializeField] int AoE;
     //[SerializeField] private SkillEffect Effect;
     [SerializeField] private GameObject emitter;
@@ -19,8 +19,8 @@ public class Skill : ScriptableObject
 
     public void Cast(CharacterScript target)
     {
-        target.Damage(Power*20);
-        Instantiate(emitter);
+        target.Damage(Power);
+        GameObject s = Instantiate(emitter);
     }
 
     public void DealSingleDamage(CharacterScript target, int damage)

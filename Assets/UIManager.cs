@@ -28,12 +28,21 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+
         if (instance == null)
         {
             instance = this;
         }
         if (instance != this) DestroyImmediate(gameObject);
+        GameManager.instance.GameStateChange += StateGUIChange;
+        GameManager.instance.ARStateChange += ARGUIChange;
+
     }
+
+    private void Awake()
+    {
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -60,13 +69,16 @@ public class UIManager : MonoBehaviour
         if (btn == Skill1)
         {
             MovementController.instance.CastSkill1();
-        }if (btn == Skill2)
+        }
+        if (btn == Skill2)
         {
             MovementController.instance.CastSkill2();
-        }if (btn == Skill3)
+        }
+        if (btn == Skill3)
         {
             MovementController.instance.CastSkill3();
-        }if (btn == EndTurn)
+        }
+        if (btn == EndTurn)
         {
             if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty || GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
             {
@@ -84,14 +96,14 @@ public class UIManager : MonoBehaviour
     public void SetSkill2Txt(string txt)
     {
         skill2txt.text = txt;
-    }
+    }   
     public void SetSkill3Txt(string txt)
     {
         skill3txt.text = txt;
     }
     public void SetPhaseTxt(string txt)
     {
-        skill3txt.text = txt;
+        phasetxt.text = txt;
     }
 
     public void ShowButtons(bool _show)
@@ -151,6 +163,18 @@ public class UIManager : MonoBehaviour
             SetSkill3Txt(MovementController.instance._chara.GetSkill3().name);
             ShowButtons(true);
             SetPhaseTxt(playerText);
+        }
+    }
+
+    public void ARGUIChange()
+    {
+        if (GameManager.instance.state == GameManager.ARState.ScanPlane)
+        {
+            SetPhaseTxt(readyText);
+        }
+        else
+        {
+            StateGUIChange();
         }
     }
     

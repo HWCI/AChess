@@ -15,11 +15,13 @@ public struct CharacterConfig
 public class CharacterScript : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private CharacterConfig character;
+    [SerializeField] private bool player = true;
     private Animator _anim;
     private Transform _transform;
     private NavMeshAgent navAgent;
     private int health;
     private int action;
+    
 
     public void OnPointerClick(PointerEventData pED)
     {
@@ -126,7 +128,19 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
     
     public void PlayerMove(RaycastHit hit)
     {
-        this.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+        if (action > 0)
+        {
+            this.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+            action -= 1;
+            if (action == 0)
+            {
+                MovementController.instance.ReleaseTarget();
+            }
+        }
+        else
+        {
+            MovementController.instance.ReleaseTarget();
+        }
     }
 
     public void Move(Vector3 location)

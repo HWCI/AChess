@@ -35,6 +35,7 @@ public class MovementController : MonoBehaviour
         if (instance == null) instance = this;
 
         if (instance != this) DestroyImmediate(gameObject);
+        
     }
 
     // Update is called once per frame
@@ -140,10 +141,19 @@ public class MovementController : MonoBehaviour
             }
 
         if (hit.collider.gameObject.CompareTag("Player"))
+        {
             _chara = hit.transform.GetComponent<CharacterScript>();
+            GameManager.instance.gameStage = GameManager.GameState.PlayerEmpty;
+            GameManager.instance.gameStage = GameManager.GameState.PlayerSelect;
+        }
     }
 
-    
+    public void ReleaseTarget()
+    {
+        _chara = null;
+        GameManager.instance.gameStage = GameManager.GameState.PlayerEmpty;
+    }
+
 
     public void SetChara(CharacterScript chara)
     {

@@ -1,6 +1,22 @@
 using UnityEngine;
     public class SkillEffect : MonoBehaviour
     {
+        private Collider c;
+        [SerializeField]private int damage;
+
+        private void Start()
+        {
+            c = GetComponent<Collider>();
+        }
+
+        private void OnCollisionEnter(Collision other)
+        {
+            if (other.collider.gameObject.GetComponent<CharacterScript>() != null)
+            {
+                other.collider.gameObject.GetComponent<CharacterScript>().Damage(damage);
+            }
+        }
+
         public void OnCast(int range, int power, SkillType type, int AoE, CharacterScript target, GameObject emitter)
         {
             target.Damage(power*20);

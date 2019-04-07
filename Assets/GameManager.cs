@@ -34,34 +34,40 @@ public class GameManager : MonoBehaviour
     public GameObject _currentScene;
     //public NavMeshData meshdata;
     
-    public delegate void GameStateChange();
-    public event GameStateChange OnGameStateChange;
-    public delegate void ARStateChange();
-    public event ARStateChange OnARStateChange;
+    public delegate void GameStateChangeHandler();
+    public event GameStateChangeHandler GameStateChange;
+    public delegate void ARStateChangeHandler();
+    public event ARStateChangeHandler ARStateChange;
 
     // Use this for initialization
-    private void Start()
+    private void Awake()
     {
         if (instance == null)
         {
             instance = this;
             state = ARState.ScanPlane;
             gameStage = GameState.Readying;
+            
         }
         if (instance != this) DestroyImmediate(gameObject);
     }
+                 private void Start()
+                 {
+                     GameStateChange();
+                     //ARStateChange();
+                 }
 
-    void Update()
+                 void Update()
     {
         if (_gameStage != gameStage)
         {
             _gameStage = gameStage;
-            OnGameStateChange();
+            GameStateChange();
         }if (_state != state)
         {
             _state = state;
-            OnARStateChange();
-        }
+            ARStateChange();
+        }    
         if (state == ARState.ScanPlane)
         {
             if (Input.GetMouseButtonDown(0))
