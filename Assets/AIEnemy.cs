@@ -24,7 +24,7 @@ public class AIEnemy : MonoBehaviour
     {
         if (GameManager.instance.gameStage == GameManager.GameState.EnemyTurn)
         {
-            GameObject target;
+            GameObject target = null;
             float priority = 0;
             foreach (GameObject o in GameObject.FindGameObjectsWithTag("Player"))
             {
@@ -33,23 +33,50 @@ public class AIEnemy : MonoBehaviour
                     target = o;
                     priority = getPriority(o);
                 }
-            }
-            
+                
+            } StartCoroutine(approachTarget(target));
         }
     }
 
-    private void approachTarget(GameObject target)
+    private IEnumerator approachTarget(GameObject target)
     {
         if (meleeOnly)
         {
-            Physics.Raycast()
-            target.GetComponent<CharacterScript>().PlayerMove();
+            target.GetComponent<CharacterScript>().Move(getNearestValidGrid(target.transform));
         }
+        yield return new WaitForSeconds(3f);
+        attackTarget(target);
+    }
+
+    private Vector3 getNearestValidGrid(Transform t)
+    {
+        float x = (gameObject.transform.position.x - t.position.x);
+        if (x > 0)
+        {
+            x = 1;
+        }
+        else
+        {
+            x = -1;
+        }
+        //float y = (gameObject.transform.position.y - t.position.y);
+        float z = (gameObject.transform.position.z - t.position.z);
+        if (z > 0)
+        {
+            z = 1;
+        }
+        else
+        {
+            z = -1;
+        }
+
+        Vector3 grid = new Vector3 (t.position.x + x, t.position.y, t.position.z + z);
+        return grid;
     }
 
     private void attackTarget(GameObject target)
     {
-        
+        _chara.Skill1(target.GetComponent<CharacterScript>());
     }
 
     private float getPriority(GameObject unit)

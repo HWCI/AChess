@@ -41,6 +41,7 @@ public class GridScript : MonoBehaviour, IPointerClickHandler
         {
             Occupant = other.gameObject.GetComponent<CharacterScript>();
             stayTime = 0;
+            other.gameObject.transform.position = new Vector3(this.gameObject.transform.position.x, gameObject.transform.position.y + 0.5f, gameObject.transform.position.z);
         }
     }
 

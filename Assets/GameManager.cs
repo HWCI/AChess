@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
                      //ARStateChange();
                  }
 
-                 void Update()
+    void Update()
     {
         if (_gameStage != gameStage)
         {
@@ -113,10 +113,8 @@ public class GameManager : MonoBehaviour
             //meshdata.position = atPosition;
            // NavMesh.RemoveAllNavMeshData();
            // NavMesh.AddNavMeshData(meshdata);
-            
             //_currentScene.transform.parent = parent;
             _currentScene.SetActive(true);
-            
             planeObject.SetActive(false);
             state = ARState.PlacedScene;
         }

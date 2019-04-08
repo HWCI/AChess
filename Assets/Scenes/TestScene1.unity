@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2449,6 +2449,7 @@ MonoBehaviour:
     Skill3: {fileID: 0}
     Health: 100
     Actions: 2
+    Movement: 0
   player: 0
 --- !u!4 &526614660 stripped
 Transform:
@@ -6313,9 +6314,10 @@ MonoBehaviour:
   createHeight: 0
   maxRayDistance: 30
   state: 0
-  _state: 0
   gameStage: 0
+  uiStage: 0
   anchored: 0
+  planeObject: {fileID: 0}
   planePrefab: {fileID: 7904924517765586376, guid: b746de922e2e4a149ae1762f4a250d6e,
     type: 3}
   _currentScene: {fileID: 1151035746}
