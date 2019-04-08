@@ -15,20 +15,28 @@ public class GameManager : MonoBehaviour
     public enum GameState
     {
         Readying,
-        PlayerEmpty,
-        PlayerSelect,
+        PlayerTurn,
         EnemyTurn,
         Resolution
+    }
+
+    public enum UIState
+    {
+        Empty,
+        Selected
     }
 
     public float createHeight;
     public float maxRayDistance = 30.0f;
     public ARState state;
-    public ARState _state = ARState.ScanPlane;
+    private ARState _state = ARState.ScanPlane;
     public GameState gameStage;
     private GameState _gameStage = GameState.Readying;
+    public UIState uiStage;
+    private UIState _uiStage = UIState.Empty;
     public bool anchored;
     public static GameManager instance;
+    public GameObject planeObject;
     public GameObject planePrefab;
     private UnityARAnchorManager unityARAnchorManager;
     public GameObject _currentScene;
@@ -36,6 +44,8 @@ public class GameManager : MonoBehaviour
     
     public delegate void GameStateChangeHandler();
     public event GameStateChangeHandler GameStateChange;
+    public delegate void UIStateChangeHandler();
+    public event UIStateChangeHandler UIStateChange;
     public delegate void ARStateChangeHandler();
     public event ARStateChangeHandler ARStateChange;
 
@@ -47,7 +57,7 @@ public class GameManager : MonoBehaviour
             instance = this;
             state = ARState.ScanPlane;
             gameStage = GameState.Readying;
-            
+            planeObject.SetActive(true);
         }
         if (instance != this) DestroyImmediate(gameObject);
     }
@@ -67,6 +77,10 @@ public class GameManager : MonoBehaviour
         {
             _state = state;
             ARStateChange();
+        }  if (_uiStage != uiStage)
+        {
+            _uiStage = uiStage;
+            UIStateChange();
         }    
         if (state == ARState.ScanPlane)
         {
@@ -102,6 +116,8 @@ public class GameManager : MonoBehaviour
             
             //_currentScene.transform.parent = parent;
             _currentScene.SetActive(true);
+            
+            planeObject.SetActive(false);
             state = ARState.PlacedScene;
         }
     }
@@ -110,5 +126,7 @@ public class GameManager : MonoBehaviour
     {
         Destroy(_currentScene);
         state = ARState.ScanPlane;
+        
+        planeObject.SetActive(true);
     }
 }

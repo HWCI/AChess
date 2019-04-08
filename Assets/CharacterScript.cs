@@ -11,6 +11,7 @@ public struct CharacterConfig
     public Skill Skill3;
     public int Health;
     public int Actions;
+    public int Movement;
 }
 public class CharacterScript : MonoBehaviour, IPointerClickHandler
 {
@@ -36,12 +37,21 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         _transform = gameObject.GetComponent<Transform>();
         _anim = gameObject.GetComponent<Animator>();
         ReInit();
+        GameManager.instance.GameStateChange += ResetAction;
     }
 
     private void ReInit()
     {
         health = character.Health;
         action = character.Actions;
+    }
+
+    public void ResetAction()
+    {
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
+        {
+            action = character.Actions;
+        }
     }
 
     // Update is called once per frame
@@ -132,6 +142,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         {
             this.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
             action -= 1;
+            Debug.Log("Moved!");
             if (action == 0)
             {
                 MovementController.instance.ReleaseTarget();
@@ -140,6 +151,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         else
         {
             MovementController.instance.ReleaseTarget();
+            Debug.Log("No action!");
         }
     }
 

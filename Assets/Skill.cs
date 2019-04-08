@@ -5,10 +5,10 @@ public class Skill : ScriptableObject
 {
     [SerializeField] public string skillName;
     [SerializeField] private int skillId;
-    [SerializeField] int Range;
-    [SerializeField] int Power;
+    [SerializeField] public int Range;
+    [SerializeField] public int Power;
     [SerializeField] public SkillType Type;
-    [SerializeField] int AoE;
+    [SerializeField] public int AoE;
     //[SerializeField] private SkillEffect Effect;
     [SerializeField] private GameObject emitter;
 

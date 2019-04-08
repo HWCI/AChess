@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731749, g: 0.13414757, b: 0.1210787, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -928,7 +928,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 99359887}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1101498070}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -1195,7 +1195,7 @@ GameObject:
   - component: {fileID: 207548925}
   - component: {fileID: 207548926}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ARPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2006,6 +2006,38 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 99359887}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &474844622 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1485598900440132, guid: 2d561df5efdcb50449d68a1eeab9dccf,
+    type: 3}
+  m_PrefabInstance: {fileID: 1017865645}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &474844623
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 474844622}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!4 &485319437 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4684069872586450, guid: 1d8d427bc8dcfe745814ec501480aeb6,
@@ -4029,7 +4061,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 818000383}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1227424932}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -4750,7 +4782,7 @@ MonoBehaviour:
     type: 3}
   m_PrefabInstance: {fileID: 1017865645}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 474844622}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
@@ -4975,6 +5007,38 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 253017175}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1101498070 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1485598900440132, guid: 2d561df5efdcb50449d68a1eeab9dccf,
+    type: 3}
+  m_PrefabInstance: {fileID: 99359887}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1101498071
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101498070}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1001 &1102131232
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5385,7 +5449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1151035747
 Transform:
   m_ObjectHideFlags: 0
@@ -5656,6 +5720,38 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1d8d427bc8dcfe745814ec501480aeb6, type: 3}
+--- !u!1 &1227424932 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1485598900440132, guid: 2d561df5efdcb50449d68a1eeab9dccf,
+    type: 3}
+  m_PrefabInstance: {fileID: 818000383}
+  m_PrefabAsset: {fileID: 0}
+--- !u!61 &1227424933
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1227424932}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!4 &1228012664 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2018909184849575325, guid: cb722bfa1ce34224dba5d6cd44243da0,
@@ -6846,6 +6942,7 @@ GameObject:
   - component: {fileID: 1508222548}
   - component: {fileID: 1508222547}
   - component: {fileID: 1508222546}
+  - component: {fileID: 1508222549}
   m_Layer: 5
   m_Name: End Turn
   m_TagString: Untagged
@@ -6963,6 +7060,32 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1508222544}
   m_CullTransparentMesh: 0
+--- !u!61 &1508222549
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1508222544}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1001 &1515590805
 PrefabInstance:
   m_ObjectHideFlags: 0

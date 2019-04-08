@@ -42,8 +42,17 @@ public class MovementController : MonoBehaviour
     private void Update()
     {
 #if UNITY_EDITOR //we will only use this script on the editor side, though there is nothing that would prevent it from working on device
-        
-            if (Input.GetMouseButtonDown(0))
+
+        if (_chara != null)
+        {
+            GameManager.instance.uiStage = GameManager.UIState.Selected;
+        }
+        else
+        {
+            GameManager.instance.uiStage = GameManager.UIState.Empty;
+        }
+
+        if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit hit;
                 Vector3 inputpos;
@@ -127,7 +136,11 @@ public class MovementController : MonoBehaviour
                 }
                 else
                 {
-                    _target.GetComponent<GridScript>().GreenHighlight(false);
+                    if (_target != null)
+                    {
+                        _target.GetComponent<GridScript>().GreenHighlight(false);
+                        _target.GetComponent<GridScript>().RedHighlight(false);
+                    }
                     _target = hit.transform;
                     _target.GetComponent<GridScript>().GreenHighlight(true);
                     if (_trail != null)
@@ -143,15 +156,13 @@ public class MovementController : MonoBehaviour
         if (hit.collider.gameObject.CompareTag("Player"))
         {
             _chara = hit.transform.GetComponent<CharacterScript>();
-            GameManager.instance.gameStage = GameManager.GameState.PlayerEmpty;
-            GameManager.instance.gameStage = GameManager.GameState.PlayerSelect;
         }
     }
 
     public void ReleaseTarget()
     {
         _chara = null;
-        GameManager.instance.gameStage = GameManager.GameState.PlayerEmpty;
+        GameManager.instance.uiStage = GameManager.UIState.Empty;
     }
 
 

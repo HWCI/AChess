@@ -36,6 +36,7 @@ public class UIManager : MonoBehaviour
         if (instance != this) DestroyImmediate(gameObject);
         GameManager.instance.GameStateChange += StateGUIChange;
         GameManager.instance.ARStateChange += ARGUIChange;
+        GameManager.instance.UIStateChange += GUIChange;
 
     }
 
@@ -46,8 +47,7 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty ||
-            GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
         {
             if (MovementController.instance._target == null)
             {
@@ -80,7 +80,7 @@ public class UIManager : MonoBehaviour
         }
         if (btn == EndTurn)
         {
-            if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty || GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+            if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
             {
                 GameManager.instance.gameStage = GameManager.GameState.EnemyTurn;
             }
@@ -151,19 +151,19 @@ public class UIManager : MonoBehaviour
             SetPhaseTxt(endText);
         }
 
-        if (GameManager.instance.gameStage == GameManager.GameState.PlayerEmpty)
+        if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
         {
             ShowButtons(false);
             SetPhaseTxt(playerText);
         }
-        if (GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
-        {
-            SetSkill1Txt(MovementController.instance._chara.GetSkill1().name);
-            SetSkill2Txt(MovementController.instance._chara.GetSkill2().name);
-            SetSkill3Txt(MovementController.instance._chara.GetSkill3().name);
-            ShowButtons(true);
-            SetPhaseTxt(playerText);
-        }
+        //if (GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
+       // {
+      //      SetSkill1Txt(MovementController.instance._chara.GetSkill1().name);
+     //       SetSkill2Txt(MovementController.instance._chara.GetSkill2().name);
+      //      SetSkill3Txt(MovementController.instance._chara.GetSkill3().name);
+     //       ShowButtons(true);
+     //       SetPhaseTxt(playerText);
+     //   }
     }
 
     public void ARGUIChange()
@@ -175,6 +175,21 @@ public class UIManager : MonoBehaviour
         else
         {
             StateGUIChange();
+        }
+    }
+    
+    public void GUIChange()
+    {
+        if (GameManager.instance.uiStage == GameManager.UIState.Empty)
+        {
+            ShowButtons(false);
+        }
+        else
+        {
+            SetSkill1Txt(MovementController.instance._chara.GetSkill1().name);
+            SetSkill2Txt(MovementController.instance._chara.GetSkill2().name);
+            SetSkill3Txt(MovementController.instance._chara.GetSkill3().name);
+            ShowButtons(true);
         }
     }
     
