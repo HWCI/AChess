@@ -121,6 +121,11 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         return character.Skill3;
     }
 
+    public int getAction()
+    {
+        return action;
+    }
+
     public void Heal(int hp)
     {
         health += hp;
@@ -140,7 +145,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
     {
         if (action > 0)
         {
-            this.gameObject.GetComponent<NavMeshAgent>().destination = hit.transform.position;
+            navAgent.destination = hit.transform.position;
             action -= 1;
             Debug.Log("Moved!");
             if (action == 0)

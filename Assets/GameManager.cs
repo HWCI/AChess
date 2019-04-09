@@ -63,7 +63,9 @@ public class GameManager : MonoBehaviour
     }
                  private void Start()
                  {
-                     GameStateChange();
+                     if(GameStateChange != null)GameStateChange();
+                     if(UIStateChange != null)UIStateChange();
+                     if(ARStateChange != null)ARStateChange();
                      //ARStateChange();
                  }
 
@@ -72,14 +74,17 @@ public class GameManager : MonoBehaviour
         if (_gameStage != gameStage)
         {
             _gameStage = gameStage;
+            if(GameStateChange != null)
             GameStateChange();
         }if (_state != state)
         {
             _state = state;
+            if(ARStateChange != null)
             ARStateChange();
         }  if (_uiStage != uiStage)
         {
             _uiStage = uiStage;
+            if(UIStateChange != null)
             UIStateChange();
         }    
         if (state == ARState.ScanPlane)
@@ -117,6 +122,7 @@ public class GameManager : MonoBehaviour
             _currentScene.SetActive(true);
             planeObject.SetActive(false);
             state = ARState.PlacedScene;
+            gameStage = GameState.PlayerTurn;
         }
     }
 

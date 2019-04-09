@@ -16,7 +16,8 @@ public class AIEnemy : MonoBehaviour
     void Start()
     {
         _chara = GetComponent<CharacterScript>();
-        GameManager.instance.GameStateChange += CalculateActions;
+        AIManager.instance.CollectAi(this);
+        //GameManager.instance.GameStateChange += CalculateActions;
     }
     
 
@@ -28,7 +29,7 @@ public class AIEnemy : MonoBehaviour
             float priority = 0;
             foreach (GameObject o in GameObject.FindGameObjectsWithTag("Player"))
             {
-                if (getPriority(o) > priority)
+                if (Mathf.Max(getPriority(o), 0.1f) > priority)
                 {
                     target = o;
                     priority = getPriority(o);
@@ -42,7 +43,7 @@ public class AIEnemy : MonoBehaviour
     {
         if (meleeOnly)
         {
-            target.GetComponent<CharacterScript>().Move(getNearestValidGrid(target.transform));
+            _chara.Move(getNearestValidGrid(target.transform));
         }
         yield return new WaitForSeconds(3f);
         attackTarget(target);
@@ -77,6 +78,7 @@ public class AIEnemy : MonoBehaviour
     private void attackTarget(GameObject target)
     {
         _chara.Skill1(target.GetComponent<CharacterScript>());
+        AIManager.instance.AiComplete();
     }
 
     private float getPriority(GameObject unit)

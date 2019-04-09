@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Shootable
+  - Grid
+  - Enemy
   layers:
   - Default
   - TransparentFX

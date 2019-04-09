@@ -156,6 +156,10 @@ public class MovementController : MonoBehaviour
         if (hit.collider.gameObject.CompareTag("Player"))
         {
             _chara = hit.transform.GetComponent<CharacterScript>();
+            if (_chara.getAction() <= 0)
+            {
+                ReleaseTarget();
+            }
         }
     }
 

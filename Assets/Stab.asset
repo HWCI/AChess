@@ -18,4 +18,4 @@ MonoBehaviour:
   Power: 35
   Type: 2
   AoE: 0
-  emitter: {fileID: 0}
+  emitter: {fileID: 1341869769842038, guid: 8b7a1ffda5bb7474b8fae646c45ce7b4, type: 3}

@@ -111,7 +111,7 @@ public class UIManager : MonoBehaviour
         ShowSkill1Button(_show);
         ShowSkill2Button(_show);
         ShowSkill3Button(_show);
-        ShowTurnEndButton(_show);
+        //ShowTurnEndButton(_show);
     }
 
     public void ShowSkill1Button(bool _show)
@@ -136,25 +136,32 @@ public class UIManager : MonoBehaviour
         if (GameManager.instance.gameStage == GameManager.GameState.Readying)
         {
             ShowButtons(false);
-            SetPhaseTxt(readyText);
+            //SetPhaseTxt(readyText);
+            ShowTurnEndButton(false);
         }
 
         if (GameManager.instance.gameStage == GameManager.GameState.EnemyTurn)
         {
             ShowButtons(false);
             SetPhaseTxt(enemyText);
+            ShowTurnEndButton(false);
+
         }
         
         if (GameManager.instance.gameStage == GameManager.GameState.Resolution)
         {
             ShowButtons(false);
             SetPhaseTxt(endText);
+            ShowTurnEndButton(false);
+
         }
 
         if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
         {
             ShowButtons(false);
             SetPhaseTxt(playerText);
+            ShowTurnEndButton(true);
+
         }
         //if (GameManager.instance.gameStage == GameManager.GameState.PlayerSelect)
        // {

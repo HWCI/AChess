@@ -20,7 +20,7 @@ public class Skill : ScriptableObject
     public void Cast(CharacterScript target)
     {
         target.Damage(Power);
-        GameObject s = Instantiate(emitter);
+        GameObject s = Instantiate(emitter, target.transform.position, target.transform.rotation);
     }
 
     public void DealSingleDamage(CharacterScript target, int damage)

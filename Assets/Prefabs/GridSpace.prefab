@@ -120,7 +120,6 @@ GameObject:
   - component: {fileID: 8162622707450998624}
   - component: {fileID: 7530340716338353511}
   - component: {fileID: 2395732190701383315}
-  - component: {fileID: 1909011547639561446}
   m_Layer: 0
   m_Name: RedHighlight
   m_TagString: Untagged
@@ -187,19 +186,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &1909011547639561446
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4839470500963269808}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: -9.313226e-10, z: 0}
 --- !u!1 &9184625646437471227
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,7 +197,6 @@ GameObject:
   - component: {fileID: 8376808799293855002}
   - component: {fileID: 5494331993494343009}
   - component: {fileID: 704140677840922128}
-  - component: {fileID: 891547166644575683}
   m_Layer: 0
   m_Name: GreenHighlight
   m_TagString: Untagged
@@ -278,16 +263,3 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!65 &891547166644575683
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9184625646437471227}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: -9.313226e-10, z: 0}
