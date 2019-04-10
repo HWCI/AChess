@@ -43,6 +43,7 @@
         <e p="InteractionScript.cs" t="Include" />
         <e p="JumpableObstacle.cs" t="Include" />
         <e p="MovementController.cs" t="Include" />
+        <e p="PlaneHider.cs" t="Include" />
         <e p="RPG Character Animation Pack FREE" t="Include">
           <e p="Code" t="Include">
             <e p="CameraController.cs" t="Include" />
@@ -558,7 +559,9 @@
       <e p="NavMeshComponentsEditor.csproj" t="IncludeRecursive" />
       <e p="obj" t="ExcludeRecursive" />
       <e p="packages" t="ExcludeRecursive" />
-      <e p="Temp\bin" t="ExcludeRecursive" />
+      <e p="Temp" t="ExcludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+      </e>
     </e>
   </component>
 </project>

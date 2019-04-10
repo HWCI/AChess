@@ -23,27 +23,34 @@ public class AIEnemy : MonoBehaviour
 
     public void CalculateActions()
     {
-        if (GameManager.instance.gameStage == GameManager.GameState.EnemyTurn)
+        if (gameObject.activeSelf)
         {
-            GameObject target = null;
-            float priority = 0;
-            foreach (GameObject o in GameObject.FindGameObjectsWithTag("Player"))
+            if (GameManager.instance.gameStage == GameManager.GameState.EnemyTurn)
             {
-                if (Mathf.Max(getPriority(o), 0.1f) > priority)
+                GameObject target = null;
+                float priority = 0;
+                foreach (GameObject o in GameObject.FindGameObjectsWithTag("Player"))
                 {
-                    target = o;
-                    priority = getPriority(o);
+                    if (Mathf.Max(getPriority(o), 0.1f) > priority)
+                    {
+                        target = o;
+                        priority = getPriority(o);
+                    }
+
                 }
-                
-            } StartCoroutine(approachTarget(target));
+
+                StartCoroutine(approachTarget(target));
+            }
         }
     }
 
     private IEnumerator approachTarget(GameObject target)
     {
-        if (meleeOnly)
+        print(target + "is targetted");
+        //if (meleeOnly)
         {
-            _chara.Move(getNearestValidGrid(target.transform));
+            //_chara.Move(getNearestValidGrid(target.transform));
+            _chara.AIMove((target.transform.position));
         }
         yield return new WaitForSeconds(3f);
         attackTarget(target);
@@ -51,7 +58,7 @@ public class AIEnemy : MonoBehaviour
 
     private Vector3 getNearestValidGrid(Transform t)
     {
-        float x = (gameObject.transform.position.x - t.position.x);
+        float x = (gameObject.transform.localPosition.x - t.localPosition.x);
         if (x > 0)
         {
             x = 1;
@@ -61,7 +68,7 @@ public class AIEnemy : MonoBehaviour
             x = -1;
         }
         //float y = (gameObject.transform.position.y - t.position.y);
-        float z = (gameObject.transform.position.z - t.position.z);
+        float z = (gameObject.transform.localPosition.z - t.localPosition.z);
         if (z > 0)
         {
             z = 1;
@@ -71,7 +78,7 @@ public class AIEnemy : MonoBehaviour
             z = -1;
         }
 
-        Vector3 grid = new Vector3 (t.position.x + x, t.position.y, t.position.z + z);
+        Vector3 grid = new Vector3 (t.localPosition.x + x, t.localPosition.y, t.localPosition.z + z);
         return grid;
     }
 
@@ -83,7 +90,7 @@ public class AIEnemy : MonoBehaviour
 
     private float getPriority(GameObject unit)
     {
-        return threatEvaluation(unit) + effectivenessEvaluation(unit);
+        return threatEvaluation(unit) - distanceCoefficient(unit)*0.1f; //+ effectivenessEvaluation(unit);
     }
 
     private float distanceCoefficient(GameObject unit)
@@ -96,7 +103,7 @@ public class AIEnemy : MonoBehaviour
         float dc = distanceCoefficient(unit);
         float avgPower = unit.GetComponent<CharacterScript>().GetSkill1().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill1().Range - dc)), 0) +
             unit.GetComponent<CharacterScript>().GetSkill2().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill2().Range - dc)),0) +
-            unit.GetComponent<CharacterScript>().GetSkill3().Power * Mathf.Max((1 - unit.GetComponent<CharacterScript>().GetSkill3().Range - dc),0);
+            unit.GetComponent<CharacterScript>().GetSkill3().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill3().Range - dc)),0);
         return avgPower / 3 * threatWeight;
     }
 
@@ -105,7 +112,7 @@ public class AIEnemy : MonoBehaviour
         float dc = distanceCoefficient(unit);
         float avgPower = this.GetComponent<CharacterScript>().GetSkill1().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill1().Range - dc)), 0) +
                          this.GetComponent<CharacterScript>().GetSkill2().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill2().Range - dc)),0) +
-                         this.GetComponent<CharacterScript>().GetSkill3().Power * Mathf.Max((1 - unit.GetComponent<CharacterScript>().GetSkill3().Range - dc),0);
+                         this.GetComponent<CharacterScript>().GetSkill3().Power * Mathf.Max((1 - (unit.GetComponent<CharacterScript>().GetSkill3().Range - dc)),0);
         return avgPower / 3 * threatWeight;
     }
     

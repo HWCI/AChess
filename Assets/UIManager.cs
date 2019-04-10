@@ -83,6 +83,7 @@ public class UIManager : MonoBehaviour
             if (GameManager.instance.gameStage == GameManager.GameState.PlayerTurn)
             {
                 GameManager.instance.gameStage = GameManager.GameState.EnemyTurn;
+                GameManager.instance.uiStage = GameManager.UIState.Empty;
             }
         }if (btn == Reset)
         {

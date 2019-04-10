@@ -74,7 +74,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
 
     public void Move(Transform target)
     {
-        navAgent.Move(target.position);
+        navAgent.destination = target.position;
     }
 
     public void Skill1(CharacterScript target)
@@ -133,6 +133,10 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
     public void Damage(int hp)
     {
         health -= hp;
+        if (health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void SetChara()
@@ -160,7 +164,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void Move(Vector3 location)
+    public void AIMove(Vector3 location)
     {
         navAgent.destination = location;
     }

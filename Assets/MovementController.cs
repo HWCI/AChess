@@ -53,6 +53,7 @@ public class MovementController : MonoBehaviour
         }
 
         if (Input.GetMouseButtonDown(0))
+            
             {
                 RaycastHit hit;
                 Vector3 inputpos;
@@ -183,6 +184,11 @@ public class MovementController : MonoBehaviour
 
     public void CastSkill1()
     {
+        _chara.Skill1(_target.GetComponent<GridScript>().Occupant);
+    }
+
+    /*public void CastSkill1()
+    {
         if (prev != buttonType.Skill1)
         {
             switch (_chara.GetSkill1().Type)
@@ -208,7 +214,7 @@ public class MovementController : MonoBehaviour
             if(_target.GetComponent<GridScript>().Occupant != null)
             _chara.Skill1(_target.GetComponent<GridScript>().Occupant);
         }
-    }
+    }*/
     public void CastSkill2()
     {
     }
