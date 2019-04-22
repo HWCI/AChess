@@ -184,7 +184,7 @@ public class MovementController : MonoBehaviour
 
     public void CastSkill1()
     {
-        _chara.Skill1(_target.GetComponent<GridScript>().Occupant);
+        _chara.Skill1(_target.gameObject.GetComponent<GridScript>().Occupant);
     }
 
     /*public void CastSkill1()

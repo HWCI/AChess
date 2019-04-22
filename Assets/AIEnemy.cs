@@ -49,7 +49,7 @@ public class AIEnemy : MonoBehaviour
         print(target + "is targetted");
         //if (meleeOnly)
         {
-            //_chara.Move(getNearestValidGrid(target.transform));
+            //_chara.AIMove(getNearestValidGrid(target.transform));
             _chara.AIMove((target.transform.position));
         }
         yield return new WaitForSeconds(3f);

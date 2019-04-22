@@ -2,6 +2,7 @@
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.SceneManagement;
 using UnityEngine.XR.iOS;
 
 public class GameManager : MonoBehaviour
@@ -38,8 +39,13 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     public GameObject planeObject;
     public GameObject planePrefab;
+    public GameObject VictoryPage;
+    public GameObject DefeatPage;
     private UnityARAnchorManager unityARAnchorManager;
     public GameObject _currentScene;
+
+    public int AlivePlayer;
+    public int AliveEnemy;
     //public NavMeshData meshdata;
     
     public delegate void GameStateChangeHandler();
@@ -126,11 +132,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void Victory()
+    {
+        VictoryPage.SetActive(true);
+    }
+    
+    public void Defeat()
+    {
+        DefeatPage.SetActive(true);
+    }
+
     public void RemoveScene()
     {
         Destroy(_currentScene);
         state = ARState.ScanPlane;
         
         planeObject.SetActive(true);
+    }
+
+    public void RestartScene()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

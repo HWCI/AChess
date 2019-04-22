@@ -136,6 +136,22 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         if (health <= 0)
         {
             gameObject.SetActive(false);
+            if (player)
+            {
+                GameManager.instance.AlivePlayer--;
+                if (GameManager.instance.AlivePlayer <= 0)
+                {
+                    GameManager.instance.Defeat();
+                }
+            }
+            else
+            {
+                GameManager.instance.AliveEnemy--;
+                if (GameManager.instance.AliveEnemy <= 0)
+                {
+                    GameManager.instance.Victory();
+                }
+            }
         }
     }
 
