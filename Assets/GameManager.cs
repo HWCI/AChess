@@ -44,8 +44,8 @@ public class GameManager : MonoBehaviour
     private UnityARAnchorManager unityARAnchorManager;
     public GameObject _currentScene;
 
-    public int AlivePlayer;
-    public int AliveEnemy;
+    public int AlivePlayer = 3;
+    public int AliveEnemy = 2;
     //public NavMeshData meshdata;
     
     public delegate void GameStateChangeHandler();
@@ -73,6 +73,7 @@ public class GameManager : MonoBehaviour
                      if(UIStateChange != null)UIStateChange();
                      if(ARStateChange != null)ARStateChange();
                      //ARStateChange();
+                     AlivePlayer = 3;
                  }
 
     void Update()

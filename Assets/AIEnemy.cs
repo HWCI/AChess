@@ -50,6 +50,7 @@ public class AIEnemy : MonoBehaviour
         //if (meleeOnly)
         {
             //_chara.AIMove(getNearestValidGrid(target.transform));
+            
             _chara.AIMove((target.transform.position));
         }
         yield return new WaitForSeconds(3f);

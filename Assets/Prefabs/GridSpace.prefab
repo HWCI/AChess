@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 23414613449112876}
   - component: {fileID: 65018237104275406}
   - component: {fileID: 114688131527229164}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: GridSpace
   m_TagString: Grid
   m_Icon: {fileID: 0}

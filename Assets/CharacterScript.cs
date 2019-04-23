@@ -166,6 +166,7 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
         if (action > 0)
         {
             navAgent.destination = hit.transform.position;
+            _transform.LookAt(hit.transform);
             action -= 1;
             Debug.Log("Moved!");
             if (action == 0)
@@ -183,5 +184,30 @@ public class CharacterScript : MonoBehaviour, IPointerClickHandler
     public void AIMove(Vector3 location)
     {
         navAgent.destination = location;
+        _transform.LookAt(location);
+    }
+
+    public void Stop()
+    {
+        navAgent.isStopped = true;
+    }
+    
+    public void Resume()
+    {
+        navAgent.isStopped = false;
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
+        {
+            Stop();
+        }
+    }
+
+    private void OnCollisionExit(Collision other)
+    {
+        //if(other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Enemy"))
+        //Resume();
     }
 }

@@ -110,8 +110,8 @@ public class UIManager : MonoBehaviour
     public void ShowButtons(bool _show)
     {
         ShowSkill1Button(_show);
-        ShowSkill2Button(_show);
-        ShowSkill3Button(_show);
+        //ShowSkill2Button(_show);
+        //ShowSkill3Button(_show);
         //ShowTurnEndButton(_show);
     }
 

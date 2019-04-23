@@ -28,6 +28,7 @@ public class MovementController : MonoBehaviour
     public GameObject Trail;
     private GameObject _trail;
     private buttonType prev;
+    public LayerMask collisionLayer = 1 << 10;
 
     // Use this for initialization
     private void Start()
@@ -58,7 +59,7 @@ public class MovementController : MonoBehaviour
                 RaycastHit hit;
                 Vector3 inputpos;
                 inputpos = Input.mousePosition;
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(inputpos), out hit, 100))
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(inputpos), out hit, 100, collisionLayer))
                 {
                     Debug.Log(hit.collider.gameObject.name);
                     Interact(hit);
@@ -131,6 +132,7 @@ public class MovementController : MonoBehaviour
                 if (_target == hit.transform)
                 {
                     _target.GetComponent<GridScript>().GreenHighlight(false);
+                    _target.GetComponent<GridScript>().RedHighlight(false);
                     _chara.PlayerMove(hit);
                     Destroy(_trail);
                     _target = null;
@@ -182,12 +184,12 @@ public class MovementController : MonoBehaviour
         Move();
     }
 
-    public void CastSkill1()
+    /*public void CastSkill1()
     {
         _chara.Skill1(_target.gameObject.GetComponent<GridScript>().Occupant);
-    }
+    }*/
 
-    /*public void CastSkill1()
+    public void CastSkill1()
     {
         if (prev != buttonType.Skill1)
         {
@@ -214,7 +216,7 @@ public class MovementController : MonoBehaviour
             if(_target.GetComponent<GridScript>().Occupant != null)
             _chara.Skill1(_target.GetComponent<GridScript>().Occupant);
         }
-    }*/
+    }
     public void CastSkill2()
     {
     }
